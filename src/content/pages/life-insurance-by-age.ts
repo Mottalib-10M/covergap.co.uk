@@ -13,7 +13,7 @@ export default definePage({
   title: 'Life Insurance by Age 2026: Chance a Policy Ever Pays Out',
   description: 'Life insurance by age, from the ONS life tables 2022 to 2024: the chance a 10, 20 or 25-year policy pays out at 25, 40 or 60, for men and women, by UK nation.',
   h1: 'Life insurance by age: how likely a claim really is',
-  intro: 'Age is what moves the cost of cover more than anything else. Here is the reason, in the official figures: the odds of a claim at each age.',
+  intro: 'Age is what moves the cost of life insurance more than anything else. Here is the reason, in the official figures: the odds of a claim at each age.',
   resume: (h) => {
     const a = h.odds(30, 25, 'm'), b = h.odds(40, 25, 'm'), c = h.odds(50, 25, 'm'), f = h.odds(40, 25, 'f');
     return `People search for the cost of life insurance by age because premiums climb steeply from the forties onward. The cause is the risk the insurer is pricing, and that risk is public. On the ONS national life tables for 2022 to 2024, a man who takes out a 25-year policy at 30 has a ${h.pc(a)} chance of dying within the term. At 40 the same policy carries a ${h.pc(b)} chance, and at 50 it is ${h.pc(c)}. A woman of 40 starts at ${h.pc(f)}. Every ten years of waiting roughly doubles the odds for a term of the same length, which is why the same cover bought later costs more each month. This page does not invent an average premium: no insurer publishes reusable prices. It gives the odds, so a quote can be read against them.`;
@@ -30,7 +30,7 @@ export default definePage({
     function left(a: number, x: 'm' | 'f') { const e = h.E.lifeExpectancy(a, x); return `${h.num1(e)} (to ${h.num(Math.round(a + e))})`; }
     const ratio = h.odds(45, 20, 'm') / h.odds(35, 20, 'm');
     return `
-<h2>The odds at each age</h2>
+<h2>Life insurance odds at each age</h2>
 <p>The table chains the yearly death rates of the ${h.src('ons_nlt', 'ONS national life tables')} over ten and twenty years. A rate of a few in a thousand in a single year becomes several percent over two decades, and the curve bends upwards: from 35 to 45, the twenty-year figure for men grows ${h.num1(ratio)} times. That bend is what you see in quotes as you get older, before any question about health or smoking is asked.</p>
 ${h.table(['Age at start', '10 years, men', '10 years, women', '20 years, men', '20 years, women', 'Years left on average, men', 'Years left, women'], rows, 'United Kingdom, ONS national life tables 2022 to 2024, period rates for the whole population.', ['l', 'r', 'r', 'r', 'r', 'r', 'r'])}
 

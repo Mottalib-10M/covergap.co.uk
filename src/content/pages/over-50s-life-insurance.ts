@@ -15,7 +15,7 @@ export default definePage({
   title: 'Over 50s Life Insurance 2026: When Premiums Pass the Payout',
   description: 'Over 50s life insurance in 2026: type your premium and payout to see the age at which you have paid in more than it pays, and the ONS odds of reaching it.',
   h1: 'Over 50s life insurance: the age you pay in more than it pays out',
-  intro: 'An over 50s plan pays a fixed sum on death for a fixed monthly premium. No quote yet? Leave the example, or try the price from an advert or leaflet: the calculator uses only the figures you type and official UK death statistics.',
+  intro: 'Over 50s life insurance pays a fixed sum on death for a fixed monthly premium. No quote yet? Leave the example, or try the price from an advert or leaflet: the calculator uses only the figures you type and official UK death statistics.',
   resume: (h) => {
     const r = h.E.over50({ age: AGE, sex: 'm', premium: PREM, sum: SUM, stopAge: STOP });
     const f = h.E.over50({ age: AGE, sex: 'f', premium: PREM, sum: SUM, stopAge: STOP });
@@ -41,7 +41,7 @@ ${h.table(['Starting age', 'Premiums reach the payout at', 'Man alive then', 'Wo
 <p>Break-even is the payout divided by the monthly premium, so a higher premium brings it closer. The “paid in by the average age at death” line is what a man starting at ${AGE} would have paid in by the age a man of ${AGE} reaches on average.</p>
 ${h.table(['Premium a month', 'Premiums reach the payout at', 'Chance of living past it', 'Paid in by the average age at death'], rows2, `Man aged ${AGE}, payout ${h.m(SUM)}, premiums stop at ${STOP}.`, ['r', 'r', 'r', 'r'])}
 
-<h2>What these plans are for</h2>
+<h2>What over 50s life insurance is for</h2>
 <p>Over 50s plans are often sold as a way to pay for a funeral. They are not funeral plans: the payout is cash to the estate or a named person, and nothing fixes what a funeral will cost when it happens. A ${h.a('funeral-plans', 'prepaid funeral plan')} buys the service itself from an FCA-authorised provider. For people on certain benefits, the ${h.a('funeral-expenses-payment', 'Funeral Expenses Payment')} from the state can cover part of the costs, though the estate pays it back first if it can.</p>
 
 <h2>Before signing</h2>

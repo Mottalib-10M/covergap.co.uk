@@ -15,7 +15,7 @@ export default definePage({
   title: 'Life Insurance in Trust 2026/27: Inheritance Tax on a Payout',
   description: 'Life insurance in trust for 2026/27: the inheritance tax a payout adds when it falls into the estate, the thresholds that apply, and what a trust changes.',
   h1: 'Life insurance in trust: the tax a payout adds to the estate',
-  intro: 'A life policy paid to the estate is counted with everything else for inheritance tax. Enter the estate, the payout and the home to compare.',
+  intro: 'A life insurance payout made to the estate is counted with everything else for inheritance tax. Enter the estate, the payout and the home to compare.',
   resume: (h) => {
     const r = h.E.ihtOnPayout(CASE);
     const I = h.P.iht;
@@ -41,7 +41,7 @@ ${h.table(['Payout', 'Tax, policy in trust', 'Tax, paid to the estate', 'Extra t
 <p>The residence nil-rate band falls by one pound for every ${h.num(I.taperDivisor)} pounds of estate above ${h.m(I.taperThreshold)}. A large payout can push an estate over that line and cost part of the band as well as the tax on the payout itself.</p>
 ${h.table(['Estate without the policy', 'Threshold with the payout added', 'Extra tax on a payout of ' + h.m(CASE.payout)], rows2, 'Home up to the value shown left to children. No spouse exemption.', ['r', 'r', 'r'])}
 
-<h2>What a trust changes, and what it does not</h2>
+<h2>What putting life insurance in trust changes, and what it does not</h2>
 <p>A trust changes who owns the payout: the trustees claim it and pay it to the beneficiaries, so it is not part of the estate and not covered by the will. It does not change the policy’s price or the chance of a claim. The type of trust decides how flexible it is: in some, the beneficiaries are fixed; in a discretionary trust the trustees choose among a list. ${h.src('gov_trusts', 'GOV.UK’s page on trusts and taxes')} describes the types, and ${h.src('gov_trusts_iht', 'its guide to trusts and inheritance tax')} explains the charges on relevant property.</p>
 
 <h2>Where it matters most</h2>

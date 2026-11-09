@@ -14,8 +14,8 @@ export default definePage({
   card: 'Where your company sick pay and savings run out, and which deferred period would start paying at that point.',
   title: 'Income Protection Deferred Period 2026: Match Your Sick Pay',
   description: 'Income protection deferred period for 2026: find the week your company sick pay and savings run out, and set the policy to start paying then, not before.',
-  h1: 'Choosing the deferred period: when should the policy start paying?',
-  intro: 'Enter your company sick pay scheme, your outgoings and your savings. The calculator shows the week your money runs short.',
+  h1: 'Income protection deferred period: when should the policy start paying?',
+  intro: 'The income protection deferred period is the wait before the policy pays. Enter your company sick pay scheme, your outgoings and your savings. The calculator shows the week your money runs short.',
   resume: (h) => {
     const g = h.E.sickGap(CASE);
     return `The deferred period of an income protection policy is the time between stopping work and the first payment. Common choices run from four weeks to a year, and the longer it is, the lower the premium, because short absences are far more frequent than long ones. The usual way to choose it is to start the policy when your other income stops. Take an employee on ${h.m(CASE.monthlyPay)} a month whose employer pays ${CASE.fullWeeks} weeks of full pay and ${CASE.halfWeeks} weeks of half pay, with ${h.m(CASE.monthlyNeed)} of monthly outgoings and ${h.m(CASE.savings)} set aside. Full pay ends after week ${CASE.fullWeeks}; after week ${CASE.fullWeeks + CASE.halfWeeks} only state benefits remain. On this case the savings run out in week ${g.savingsGoneWeek === null ? 'none' : h.num(g.savingsGoneWeek + 1)}, so a policy deferred to the end of company pay, ${CASE.fullWeeks + CASE.halfWeeks} weeks, would start before the money is gone.`;
@@ -36,7 +36,7 @@ export default definePage({
 <p>Company sick pay comes first, at full and then half pay, with ${h.src('gov_ssp', 'Statutory Sick Pay')} included in it. Once company pay ends, ${h.src('gov_esa', 'New Style ESA')} is assumed to follow at the assessment rate, if the National Insurance record qualifies. The last column is the monthly shortfall against outgoings in each phase.</p>
 ${h.table(['Phase', 'Weeks', 'A month', 'Short each month'], rows, `Pay ${h.m(CASE.monthlyPay)} a month, ${CASE.fullWeeks} weeks full and ${CASE.halfWeeks} weeks half pay, outgoings ${h.m(CASE.monthlyNeed)}. DWP rates ${h.P.taxYear}, before tax.`, ['l', 'l', 'r', 'r'])}
 
-<h2>Four deferred periods compared</h2>
+<h2>Four income protection deferred periods compared</h2>
 <p>The next table adds a policy of ${h.m(1600)} a month with each of four common deferred periods and shows the two-year shortfall that remains and the week the savings would run out. A four-week period duplicates months the employer already pays; fifty-two weeks leaves the half-pay and ESA months to savings that do not stretch that far.</p>
 ${h.table(['Deferred period', 'Shortfall left over two years', 'Savings run out'], opt, `Same employee, savings ${h.m(CASE.savings)}, policy benefit ${h.m(1600)} a month.`, ['l', 'r', 'l'])}
 

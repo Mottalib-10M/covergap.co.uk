@@ -45,7 +45,7 @@ ${h.table(['Term from 65', 'Man', 'Woman'], rows3, 'Chance of death within the t
 
 <h2>What a partner keeps</h2>
 <p>For couples over State Pension age, ${h.src('gov_bsp', 'Bereavement Support Payment')} is not paid if the surviving partner had reached State Pension age when the death happened, so the state support that helps younger families does not apply. What the survivor keeps depends on the pensions: a defined benefit scheme may pay a survivor’s pension, a drawdown fund passes on, and an annuity may stop. Checking those first shows whether any cover is needed at all. The ${h.a('life-insurance-by-age', 'odds by age')} page gives the same figures for younger ages.</p>
-<h2>Matching the term to the need</h2>
+<h2>Choosing life insurance over 60: matching the term to the need</h2>
 <p>Three common needs set the length of cover after 60. A mortgage that still has years to run sets a term equal to the years left, and decreasing cover can follow the balance; the ${h.a('mortgage-life-insurance', 'mortgage page')} shows how quickly a repayment loan falls. A partner who would lose part of your pension sets a term up to the age at which the partner’s own income would be enough, which is often open-ended. A bill that exists whenever death comes, such as inheritance tax or a funeral, has no natural end and is better matched by whole of life cover or a plan without an end date.</p>
 <p>Whichever of these applies, the premium rises with every year of age at the start, so the earlier a decision is made, the cheaper the same cover tends to be. The term tables above show why: the chance of a claim rises with each year of the term, and insurers price each of those years.</p>
 `;

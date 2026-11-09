@@ -15,7 +15,7 @@ export default definePage({
   title: 'Critical Illness Cover 2026: Lump Sum or Monthly Income',
   description: 'Critical illness cover in 2026 against income protection: how many months of outgoings a lump sum pays for, and what a monthly benefit adds up to over time.',
   h1: 'Critical illness cover or income protection: a lump sum or an income',
-  intro: 'Both policies pay when you are alive but your finances are hit. Enter a lump sum, your outgoings and a monthly benefit to compare them in months.',
+  intro: 'Critical illness cover and income protection both pay when you are alive but your finances are hit. Enter a lump sum, your outgoings and a monthly benefit to compare them in months.',
   resume: (h) => {
     const r = h.E.lumpVsIncome(LUMP, NEED, IP, 24);
     return `Critical illness cover pays a single tax-free lump sum if the insured person meets one of the definitions listed in the policy, whether or not they can still work. Income protection pays a monthly benefit only while they cannot work, after a deferred period, until they recover or the claim period ends. They answer different questions. A lump sum of ${h.m(LUMP)} pays ${h.m(NEED)} of monthly outgoings for ${h.num1(r.lumpMonths)} months, or clears part of a mortgage at once. An income protection benefit of ${h.m(IP)} a month, paid for two years once its deferred period has passed, pays ${h.m(r.ipTotal)}, and keeps paying for as long as the claim lasts within the policy term. The lump sum is paid once, so it suits a debt or a one-off cost; the income suits a long absence. This site describes the contracts and the money, not the conditions a policy lists: those are in each insurer’s policy wording.`;
@@ -32,7 +32,7 @@ export default definePage({
     const rows2 = months.map((mo) => [`${mo} months`, h.m(IP * mo), h.m(Math.max(0, NEED - IP) * mo)]);
     const ssp = h.P.ssp;
     return `
-<h2>How long a lump sum lasts</h2>
+<h2>How long a critical illness lump sum lasts</h2>
 <p>The simplest way to size a lump sum is in months of outgoings. The table divides each sum by ${h.m(NEED)} a month, with no interest and no other income. A household that keeps working after a claim would make it last longer; one that also loses an income would spend it faster.</p>
 ${h.table(['Lump sum', 'Months of outgoings', 'Years'], rows, `Outgoings of ${h.m(NEED)} a month. Your own figure goes in the calculator.`, ['r', 'r', 'r'])}
 

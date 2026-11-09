@@ -16,7 +16,7 @@ export default definePage({
   title: 'Term Life Insurance 2026: Odds of a Claim Over the Term',
   description: 'Term life insurance with ONS odds for 2026: how often a level term policy pays out, why most expire unused, and how to set the term against the debt it covers.',
   h1: 'Term life insurance: what you are buying, in odds',
-  intro: 'A level term policy pays a fixed sum if you die within the term and nothing after it. The calculator shows how often that happens at your age.',
+  intro: 'Level term life insurance pays a fixed sum if you die within the term and nothing after it. The calculator shows how often that happens at your age.',
   resume: (h) => {
     const p = h.odds(AGE, TERM, 'm'), half = h.odds(AGE, TERM / 2, 'm'), f = h.odds(AGE, TERM, 'f');
     return `Term life insurance covers a set number of years. If the insured person dies within the term, the policy pays the sum assured, usually to whoever is named or to the trustees of a trust; if they are alive at the end, it stops and pays nothing back. A level term policy keeps the same sum for the whole term, unlike decreasing cover, which falls with a repayment mortgage. For a man of ${AGE} taking level cover for ${TERM} years, the ONS life tables for 2022 to 2024 give a ${h.pc(p)} chance of a claim, ${h.pc(half)} in the first half of the term and ${h.pc(p - half)} in the second. For a woman of the same age it is ${h.pc(f)}. The amount of cover does not change these odds, only the price. Most term policies therefore end unused, which is what keeps them cheaper than whole of life cover: the insurer only pays in the unlikely case.`;
@@ -45,7 +45,7 @@ ${h.table(['Term', 'From 30, men', 'From 30, women', 'From 45, men', 'From 45, w
 <h2>Who receives the money</h2>
 <p>A term policy paid to the estate is counted in it, as ${h.src('gov_valuing', 'GOV.UK’s guide to valuing an estate')} lists life insurance among the assets, and it waits for probate before anyone can use it. Written in trust, the payout goes to the trustees and can reach the family within weeks; the ${h.a('life-insurance-in-trust', 'trust page')} shows the inheritance tax difference.</p>
 
-<h2>Things to check in the policy summary</h2>
+<h2>Things to check in a term life insurance policy summary</h2>
 <p>Whether the premium is guaranteed for the whole term or reviewable; whether the sum assured is level, decreasing or rises with inflation; whether a terminal illness benefit pays the sum early when life expectancy is short, as many policies do; and what happens if you miss a payment. None of these needs a quote to read: they are in the key features document every insurer publishes.</p>
 `;
   },

@@ -17,7 +17,7 @@ export default definePage({
   title: 'Self-Employed Income Protection 2026/27: No Sick Pay Gap',
   description: 'Self-employed income protection for 2026/27: no Statutory Sick Pay, what New Style ESA pays and for how long, how long savings last and the gap a policy covers.',
   h1: 'Self-employed: income protection when there is no sick pay',
-  intro: 'Without an employer there is no company sick pay and no Statutory Sick Pay. The calculator starts the state support at New Style ESA.',
+  intro: 'Self-employed income protection starts from less: without an employer there is no company sick pay and no Statutory Sick Pay. The calculator starts the state support at New Style ESA.',
   resume: (h) => {
     const g = h.E.sickGap({ monthlyPay: 0, monthlyNeed: NEED, fullWeeks: 0, halfWeeks: 0, age: AGE, employee: false, savings: SAV });
     const W = h.P.weeksPerYear, M = h.P.monthsPerYear;
@@ -47,7 +47,7 @@ ${h.table(['Phase', 'Weeks', 'A week', 'A month', 'Short each month'], rows, `Se
 <h2>Limited company directors</h2>
 <p>A director who is an employee of their own company can be paid Statutory Sick Pay by the company if they are classed as an employee, at ${h.m2(h.P.ssp.weekly)} a week at most, if the company keeps paying them as an employee. In practice a one-person company often has no income while the director cannot work, so SSP is no real help. Some directors arrange a policy through the company instead, sometimes alongside ${h.a('key-person-insurance', 'key person cover')}; the tax treatment then follows the company rules, not the personal exemption.</p>
 
-<h2>What to read in a self-employed policy</h2>
+<h2>What to read in a self-employed income protection policy</h2>
 <p>How earnings are measured and over how many years; whether the definition of incapacity is your own occupation or any suited work, which matters for skilled trades; whether the benefit is reduced by other income such as rental profits; and how long each claim can last. A policy that pays for one or two years per claim costs less and still covers the period in which the state support is thinnest. Benefits from a policy you pay yourself are free of income tax under ${h.src('ittoia_735', 'section 735 of ITTOIA 2005')}.</p>
 <h2>Checking your National Insurance record</h2>
 <p>GOV.UK says New Style ESA depends on having worked and paid enough National Insurance contributions, usually in the last two to three years, with National Insurance credits also counting. Self-employed people whose profits were low in some years, or who spent time abroad or out of work without credits, should check their record on GOV.UK before relying on it. A gap means the state support in the table above may not be paid at all, and the whole of the shortfall then falls on savings and on any private policy the person holds.</p>

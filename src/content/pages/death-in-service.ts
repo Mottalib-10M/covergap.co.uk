@@ -15,7 +15,7 @@ export default definePage({
   title: 'Death in Service Benefit 2026: Is Work Life Cover Enough',
   description: 'Death in service benefit in 2026: what a multiple of salary pays, the gap it leaves against what a family needs, and why the cover stops when you leave the job.',
   h1: 'Death in service: how far work life cover goes',
-  intro: 'Many employers pay a lump sum, usually a multiple of salary, if you die while you work for them. Enter yours and the cover your family would need.',
+  intro: 'Death in service benefit is a lump sum many employers pay, usually a multiple of salary, if you die while you work for them. Enter yours and the cover your family would need.',
   resume: (h) => {
     const lump = SAL * MULT;
     return `Death in service is life cover provided through an employer, usually as part of its pension scheme or a group life policy. If an employee dies while employed, the scheme pays a lump sum, most often a multiple of salary, to the family or to whoever the trustees choose. On a salary of ${h.m(SAL)}, a four times multiple pays ${h.m(lump)}. Against a family need of ${h.m(NEED)}, which covers a mortgage, some years of income and the children’s costs, that leaves a gap of ${h.m(Math.max(0, NEED - lump))}. The benefit costs the employee nothing directly, but it has two limits that a personal policy does not. It ends the day the job ends, whether through a new job, redundancy, a career break or retirement. And the amount moves with salary and with the scheme’s rules, which the employer can change.`;

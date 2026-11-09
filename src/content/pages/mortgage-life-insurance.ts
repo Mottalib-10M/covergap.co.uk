@@ -17,7 +17,7 @@ export default definePage({
   title: 'Mortgage Life Insurance 2026: Decreasing or Level Cover',
   description: 'Mortgage life insurance in 2026: what a repayment mortgage still owes each year, how decreasing cover tracks it, and when level cover fits the loan better.',
   h1: 'Mortgage life insurance: matching the cover to the balance',
-  intro: 'Enter the loan, the rate and the years left. The calculator shows what would still be owed at any point, which is what the cover has to clear.',
+  intro: 'Mortgage life insurance has to clear what would still be owed. Enter the loan, the rate and the years left to see that balance at any point.',
   resume: (h) => {
     const b10 = h.E.mortgageBalance(LOAN, RATE, YEARS, 10), b20 = h.E.mortgageBalance(LOAN, RATE, YEARS, 20);
     const p = h.odds(AGE, YEARS, 'm');
@@ -48,7 +48,7 @@ ${h.table(['Point in the term', 'Still owed', 'Share of the loan', 'Level cover 
 <h2>Cover that already exists</h2>
 <p>Before buying a mortgage policy, add up what would already be paid on a death: death in service from an employer, an older policy, and savings. If those cover the balance, a new policy only adds a second payout. The ${h.a('home', 'life cover calculator')} counts them, together with the family’s income need, which a mortgage policy alone does not touch.</p>
 
-<h2>Trust or estate</h2>
+<h2>Mortgage life insurance: trust or estate</h2>
 <p>A policy that pays the lender directly clears the debt; one paid to the estate is part of it, as ${h.src('gov_valuing', 'GOV.UK’s guide to valuing an estate')} shows, and waits for probate. Writing the policy in trust, under the rules GOV.UK sets out for ${h.src('gov_trusts', 'trusts')}, lets the trustees use the money at once. The ${h.a('life-insurance-in-trust', 'trust page')} shows the tax at stake.</p>
 <p>The odds that this cover is ever claimed are low, as the ${h.src('ons_nlt', 'ONS life tables')} show for every age. The cost of being without it, for a family that could not keep the home, is what makes it worth looking at.</p>
 `;

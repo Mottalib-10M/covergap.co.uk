@@ -18,8 +18,8 @@ export default definePage({
   card: 'What you would be short each month on sick pay alone, against your own outgoings, and the cover that fills the gap.',
   title: 'Income Protection After Sick Pay 2026/27: Your Monthly Gap',
   description: 'How much income protection you need on top of sick pay in 2026/27: what you would be short each month against your outgoings, and over the weeks of SSP.',
-  h1: 'The gap sick pay leaves each month, and the cover that fills it',
-  intro: 'Enter your monthly pay and your monthly outgoings. The calculator shows what you would be short each month if only the legal minimum sick pay, Statutory Sick Pay, came in.',
+  h1: 'The gap sick pay leaves each month, and the income protection that fills it',
+  intro: 'Income protection after sick pay has to fill a monthly gap. Enter your monthly pay and your monthly outgoings: the calculator shows what you would be short each month if only the legal minimum sick pay, Statutory Sick Pay, came in.',
   resume: (h) => {
     const S = h.P.ssp, W = h.P.weeksPerYear, M = h.P.monthsPerYear;
     const sm = (h.E.sspWeekly((PAY * M) / W) * W) / M, short = Math.max(0, NEED - sm);
@@ -48,7 +48,7 @@ ${h.table(['Average weekly earnings', 'Sick pay a week', 'Share of pay replaced'
 <h2>Reading your employer’s scheme against it</h2>
 <p>Company sick pay schemes are set by the contract, not by law. A common shape is a number of weeks of full pay followed by a number of weeks of half pay, often growing with length of service. SSP is included in those payments, not added to them. Once company pay ends, SSP continues alone until week ${S.maxWeeks} if any weeks are left. The ${h.a('income-protection-deferred-period', 'deferred period calculator')} uses your scheme to show where your income drops.</p>
 
-<h2>Why SSP matters when choosing cover</h2>
+<h2>Why Statutory Sick Pay matters when choosing income protection</h2>
 <p>An income protection policy with a short deferred period overlaps SSP; one that starts after ${S.maxWeeks} weeks begins where SSP ends and ${h.src('gov_esa', 'New Style ESA')} takes over at a lower rate. SSP is paid by the employer whatever private cover you hold; for ESA, any policy benefit has to be declared when you claim. Because the state pays so little beyond the first months, the longer deferred periods are where the gap is widest. The ${h.a('income-protection-insurance', 'income protection timeline')} adds the policy to the state payments week by week.</p>
 <h2>Tax and National Insurance on SSP</h2>
 <p>SSP is paid through payroll like wages, so income tax and National Insurance are deducted in the usual way if the total pay is high enough. Whether anything is deducted depends on the total paid in the period, on other pay in the tax year and on your tax code. That is a different treatment from an income protection policy paid for by the employee, whose benefit is free of income tax. When comparing a policy with SSP, compare the policy benefit with SSP after deductions, not before.</p>

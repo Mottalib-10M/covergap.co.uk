@@ -13,7 +13,7 @@ export default definePage({
   title: 'Joint Life Insurance 2026: One Policy or Two Single Ones',
   description: 'Joint life insurance in 2026: how often a joint first-death policy pays out for a couple, what two single policies add, and what is left for the survivor.',
   h1: 'Joint life insurance or two single policies',
-  intro: 'Enter both ages and the term. The calculator gives the chance each policy design pays out, from the ONS life tables.',
+  intro: 'Joint life insurance is one policy for two people that pays on the first death. Enter both ages and the term. The calculator gives the chance each policy design pays out, from the ONS life tables.',
   resume: (h) => {
     const j = h.E.jointChances(40, 'm', 38, 'f', 25);
     return `A joint life policy covers two people and pays once, normally at the first death within the term, after which the cover ends. Two single policies cover each person separately, so both can pay, and the survivor still has cover after the first claim. For a man of 40 and a woman of 38 over 25 years, the ONS life tables for 2022 to 2024 give a ${h.pc(j.atLeastOne)} chance that at least one of them dies within the term, which is when a joint first-death policy pays. His own policy would pay with a ${h.pc(j.first)} chance, hers with ${h.pc(j.second)}, and the chance that both single policies pay is ${h.pc(j.both)}. A joint policy usually costs less than two single ones of the same sum, because it can pay only once; the second death in the term goes uncovered.`;
@@ -39,7 +39,7 @@ ${h.table(['Ages', 'Joint first death pays', 'His single policy', 'Her single po
 
 <h2>What the state and the tax rules add</h2>
 <p>A married survivor with a child for whom Child Benefit is paid can claim ${h.src('gov_bsp', 'Bereavement Support Payment')} at the higher rate after either death. A spouse or civil partner inherits free of ${h.src('gov_iht', 'inheritance tax')}; an unmarried partner does not, which is one reason to put either kind of policy in trust. Those rules apply in the same way to a joint or a single policy, so they do not decide between them. The choice comes down to cost against the cover the survivor keeps.</p>
-<h2>When a joint policy ends early</h2>
+<h2>When joint life insurance ends early</h2>
 <p>A joint policy is a single contract for two people. If the couple separate, it cannot usually be split into two single policies, so the choice is to keep it going, with both still covered and one claim between them, or to cancel it and apply again, each at an older age and with any change in health since the start. Some insurers offer a separation option that lets each person take out a new single policy without fresh medical questions within a set time; it is worth asking whether one exists before buying. Two single policies avoid the question altogether, because each one belongs to the person it covers and continues whatever happens to the relationship.</p>
 `;
   },

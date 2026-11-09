@@ -15,7 +15,7 @@ export default definePage({
   title: 'Key Person Insurance 2026: Sizing Cover and the HMRC Rules',
   description: 'Key person insurance in 2026: size the cover from the profit a person brings in and the cost of replacing them, and when HMRC lets the premiums be deducted.',
   h1: 'Key person insurance: how much cover, and how HMRC treats it',
-  intro: 'A business can insure the life of someone whose loss would cut its profits. Enter the profit they bring in and the time it would take to replace them.',
+  intro: 'Key person insurance lets a business insure the life of someone whose loss would cut its profits. Enter the profit they bring in and the time it would take to replace them.',
   resume: (h) => {
     const r = h.E.keyPerson(PROFIT, MONTHS, RECRUIT, 0);
     return `Key person insurance is a policy a business takes out on the life of a director, employee or other person whose death or long absence would cut its profits. The business owns the policy, pays the premiums and receives the payout. One common way to size it is the profit the person brings in over the time it would take to replace them, plus the cost of finding and training a successor, plus any loans or contracts that depend on them. On ${h.m(PROFIT)} a year of gross profit, ${MONTHS} months to replace the person and ${h.m(RECRUIT)} of recruitment costs, that gives ${h.m(r.cover)}. HMRC’s Business Income Manual, at BIM45525, says the premiums are allowable against profits only if the sole purpose is to meet a loss of trading income from losing the person’s services, not a capital loss, and if a life policy is term insurance with no other benefits. Where the premiums are allowed, the payout is taxed as income of the trade.`;
@@ -31,7 +31,7 @@ export default definePage({
     const ages = [35, 45, 55];
     const rows2 = ages.map((a) => [h.num(a), h.pc(h.odds(a, 5, 'm')), h.pc(h.odds(a, 5, 'f'))]);
     return `
-<h2>Cover by time to replace the person</h2>
+<h2>Key person cover by time to replace them</h2>
 <p>The table keeps ${h.m(PROFIT)} a year of gross profit and ${h.m(RECRUIT)} of recruitment and training, and changes only the months it would take to bring profit back to its level. A business that depends on one person’s clients or skills may need longer; one with a deputy ready may need less.</p>
 ${h.table(['Time to replace', 'Lost profit', 'Recruitment and training', 'Cover'], rows, 'Profit-based method, before any loans or contracts at risk. The figures are your own estimates.', ['l', 'r', 'r', 'r'])}
 

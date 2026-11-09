@@ -36,7 +36,7 @@ export default definePage({
 <p>The table follows a policy of ${h.m(MONTHLY)} a month over ${TERM} years. Each row is a claim in a different year. What the family receives is the monthly sum times the months left, so the policy is worth most at the start, when the children are youngest, and least near the end, when they are close to independence. That is exactly the need it is built for.</p>
 ${h.table(['Claim in', 'Total paid to the family', 'Payments run for'], rows, `${h.m(MONTHLY)} a month, ${TERM}-year term, level benefit (no yearly increase).`, ['l', 'r', 'r'])}
 
-<h2>Against a lump sum policy</h2>
+<h2>Family income benefit against a lump sum policy</h2>
 <p>A level term policy of ${h.m(lumpTotal)} would pay that full sum whenever the claim happens. In the last years of the term it pays far more than the family needs, and the insurer charges for that. Family income benefit pays only what the remaining years require. The trade-off is flexibility: a lump sum can clear a mortgage, fund a move or be invested, while a monthly income cannot do any of those without a conversion option. Many families combine the two: decreasing cover for the mortgage and family income benefit for living costs.</p>
 
 <h2>How likely a claim is</h2>

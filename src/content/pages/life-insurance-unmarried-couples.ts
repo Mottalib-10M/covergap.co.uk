@@ -13,7 +13,7 @@ export default definePage({
   title: 'Life Insurance for Unmarried Couples 2026: The Hidden Gaps',
   description: 'Life insurance for unmarried couples in 2026: when a cohabiting partner gets Bereavement Support Payment, the missing spouse exemption, and the gap it leaves.',
   h1: 'Life insurance for unmarried couples: what the law does not give you',
-  intro: 'Living together is treated differently from marriage by benefits, by inheritance and by tax. Choose your situation to see what the state would pay your partner.',
+  intro: 'Life insurance matters more for unmarried couples: living together is treated differently from marriage by benefits, by inheritance and by tax. Choose your situation to see what the state would pay your partner.',
   resume: (h) => {
     const withKids = h.E.bsp('cohabiting', true), married = h.E.bsp('married', false);
     return `For a couple who live together without marrying or forming a civil partnership, the gap left by a death is often larger than for a married couple. Bereavement Support Payment is due to a cohabiting partner only if, when the partner died, they were getting Child Benefit for a child living with them, were entitled to it, or were pregnant: in that case the full ${h.m(withKids.total)} is paid. Without children, an unmarried partner gets nothing, where a married partner would get ${h.m(married.total)}. Inheritance is the second gap. With no will, an unmarried partner has no automatic right to inherit, and anything left to them by will is taxed above the ${h.m(h.P.iht.nrb)} nil-rate band, because the spouse exemption does not apply. A life policy written in trust for the partner reaches them directly, whatever the will says.`;
@@ -39,7 +39,7 @@ ${h.table(['Couple', 'Bereavement Support Payment', 'Inheritance tax on what the
 <h2>The inheritance tax gap in figures</h2>
 <p>Take an estate of ${h.m(350000)}, including a ${h.m(250000)} share of a home, left by will to an unmarried partner, and a ${h.m(200000)} life policy paid into the estate. The partner is not a child or grandchild, so no residence band applies, and there is no spouse exemption. The policy adds ${h.m(t.extra)} of inheritance tax, and the partner receives ${h.m(t.familyGetsInEstate)} of the ${h.m(200000)}. Written in trust for the partner, the same policy would have reached them in full. The rules are on ${h.src('gov_iht', 'GOV.UK’s inheritance tax page')}; the ${h.a('life-insurance-in-trust', 'trust calculator')} runs your own case.</p>
 
-<h2>What cover usually has to do</h2>
+<h2>What life insurance for unmarried couples usually has to do</h2>
 <p>For an unmarried couple without children, the need is often the home: a survivor who owns half the house and has a mortgage in both names may have to buy out the other half from the estate, or pay the whole mortgage alone. For a couple with children, the state does pay Bereavement Support Payment, but the long-term income need is the same as for married parents. The ${h.a('home', 'life cover calculator')} has a setting for living together, which counts the benefit only when it is due.</p>
 
 <h2>Death in service and pensions</h2>

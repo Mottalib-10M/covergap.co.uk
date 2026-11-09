@@ -48,7 +48,7 @@ ${h.table(['Phase', 'Weeks', 'A week', 'A month'], rows, `Employee on ${h.m(CASE
 <h2>A generous scheme changes the picture</h2>
 <p>Many public sector and large private employers pay full salary for months, then half. With ${13} weeks of full pay and ${13} of half pay instead of four weeks, the same household’s two-year shortfall falls to ${h.m(half.shortfall)}. The ${h.a('income-protection-deferred-period', 'deferred period page')} shows how to line a policy up with the end of such a scheme, so that you do not pay for months the employer already covers.</p>
 
-<h2>Reading a policy, not a price</h2>
+<h2>Reading an income protection policy, not a price</h2>
 <p>This site shows no premiums, because no insurer publishes prices that may be reused here, and every quote depends on your job and health. What you can compare from a policy summary without giving your details is its shape: the definition of incapacity (your own job, any suited job, or daily tasks), the deferred period, how long each claim can last, whether the benefit rises with inflation and whether the premium is fixed or reviewable. A policy that pays only for two years per claim costs less than one that pays to retirement, and the timeline above shows what each would leave uncovered.</p>
 <p>Self-employed people have no company scheme and no SSP; their own ${h.a('self-employed-income-protection', 'timeline')} starts straight at ESA.</p>
 `;

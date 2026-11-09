@@ -15,7 +15,7 @@ export default definePage({
   title: 'Life and Critical Illness Cover 2026: One Payout or Two',
   description: 'Life and critical illness cover in 2026: why a combined policy pays once, on the first claim, what is left for the family, and how separate policies compare.',
   h1: 'Life and critical illness cover: combined or separate',
-  intro: 'Many policies sold together pay only once. Choose combined or separate and see what the family would receive after each kind of claim.',
+  intro: 'Sold as one policy, life and critical illness cover often pays only once. Choose combined or separate and see what the family would receive after each kind of claim.',
   resume: (h) => {
     const p = h.odds(40, 25, 'm');
     return `Life and critical illness cover is often sold as one combined policy, sometimes called accelerated cover. It pays its sum assured once, on whichever valid claim comes first: a critical illness claim during the insured person’s life, or a death claim. After a critical illness payout of the full amount, the policy ends and there is no life cover left. With ${h.m(LIFE)} of life cover and ${h.m(CI)} of critical illness cover combined, a family that claimed for a critical illness and later suffered a death in the same term would receive ${h.m(Math.max(LIFE, CI))} in all. With separate policies of the same sums, they would receive ${h.m(LIFE + CI)}. Combined cover usually costs less for the same sums, because it can only pay once. The odds of the death claim alone, for a man of 40 over 25 years, are ${h.pc(p)} on the ONS life tables.`;
@@ -30,7 +30,7 @@ export default definePage({
     const rows = cis.map((c) => [h.m(c), h.m(c), h.m(Math.max(0, LIFE - c)), h.m(Math.max(LIFE, c)), h.m(LIFE + c)]);
     const bsp = h.E.bsp('married', true);
     return `
-<h2>Combined against separate, for different critical illness sums</h2>
+<h2>Combined against separate cover, for different critical illness sums</h2>
 <p>The table keeps ${h.m(LIFE)} of life cover and varies the critical illness sum. A combined policy pays the critical illness sum on a living claim and keeps only the rest as life cover; separate policies keep the whole life cover. The two “Total if both claims” lines show what the family receives if both kinds of claim happen within the term.</p>
 ${h.table(['Critical illness sum', 'Paid on a critical illness claim', 'Life cover left (combined)', 'Total if both claims, combined', 'Total if both claims, separate'], rows, `Life cover ${h.m(LIFE)} in each case. Sums are your own choice.`, ['r', 'r', 'r', 'r', 'r'])}
 
