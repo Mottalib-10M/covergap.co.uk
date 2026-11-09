@@ -3,8 +3,9 @@ import { PAGES, pageById } from '../lib/guides';
 import type { Group } from '../lib/guide-types';
 export interface NavLink { href: string; label: string } export interface NavCategory { label: string; links: NavLink[] }
 const CORE: Record<string, string> = { home: 'Life cover calculator', method: 'How the figures are worked out', about: 'About', widget: 'Embed the calculator', contact: 'Contact', editorial: 'Editorial policy', privacy: 'Privacy', terms: 'Legal notice', cookies: 'Cookies' };
+// Testers of 2026-11-09 (second round): “income protection” was nowhere in the menu; the group says it.
 // One name per group in the menu, the footer and the page kickers (testers 2026-11-09: “Tax” here, “Trusts, tax and business” there).
-const GROUP_LABEL: Record<Group, string> = { life: 'Life cover', income: 'Sick pay', later: 'Over 50', funeral: 'Funerals', tax: 'Trusts and tax' };
+const GROUP_LABEL: Record<Group, string> = { life: 'Life cover', income: 'Sick pay and income protection', later: 'Over 50', funeral: 'Funerals', tax: 'Trusts and tax' };
 export const GROUPS_ORDER: Group[] = ['life', 'income', 'later', 'funeral', 'tax'];
 export const groupLabel = (g: Group) => GROUP_LABEL[g];
 export const label = (id: string, _lang: Locale = 'en') => CORE[id] ?? pageById(id)?.nav ?? id;

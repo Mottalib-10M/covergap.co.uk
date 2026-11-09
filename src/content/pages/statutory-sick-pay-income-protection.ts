@@ -2,13 +2,15 @@ import { definePage } from '../../lib/guide-types';
 
 // Page centred on the gap SSP leaves and the cover that fills it (audit of 2026-11-09, A4): the SSP rate
 // itself is statutorypay.co.uk's subject, not this site's.
-const WEEKLY = 450, NEED = 2000;
+// Testers of 2026-11-09 (second round): the same example as the income protection page (£2,800 a month,
+// £2,000 of outgoings), pay asked a month, and the two gaps (against outgoings, against pay) named apart.
+const PAY = 2800, NEED = 2000;
 
 export default definePage({
   id: 'statutory-sick-pay-income-protection',
   group: 'income',
   order: 110,
-  tool: { kind: 'mini:ssp', props: { weekly: WEEKLY, need: NEED } },
+  tool: { kind: 'mini:ssp', props: { pay: PAY, need: NEED } },
   related: ['income-protection-insurance', 'income-protection-deferred-period', 'self-employed-income-protection', 'death-in-service'],
   sources: ['gov_ssp', 'gov_ssp_2026', 'gov_rates', 'gov_esa'],
   slug: 'statutory-sick-pay-income-protection',
@@ -17,11 +19,11 @@ export default definePage({
   title: 'Income Protection After Sick Pay 2026/27: Your Monthly Gap',
   description: 'How much income protection you need on top of sick pay in 2026/27: what you would be short each month against your outgoings, and over the weeks of SSP.',
   h1: 'The gap sick pay leaves each month, and the cover that fills it',
-  intro: 'Enter your weekly earnings and your monthly outgoings. The calculator shows what you would be short each month if only the legal minimum sick pay came in.',
+  intro: 'Enter your monthly pay and your monthly outgoings. The calculator shows what you would be short each month if only the legal minimum sick pay, Statutory Sick Pay, came in.',
   resume: (h) => {
     const S = h.P.ssp, W = h.P.weeksPerYear, M = h.P.monthsPerYear;
-    const sm = (h.E.sspWeekly(WEEKLY) * W) / M, short = Math.max(0, NEED - sm);
-    return `Most employees who fall ill get only the legal minimum, Statutory Sick Pay (SSP), once any company sick pay in their contract has run out. For ${h.P.taxYear} that is at most ${h.m2(S.weekly)} a week, about ${h.m(sm)} a month, for up to ${S.maxWeeks} weeks. Set against ordinary outgoings, the gap is large. Someone earning ${h.m(WEEKLY)} a week, about ${h.m((WEEKLY * W) / M)} a month, with ${h.m(NEED)} a month of rent or mortgage, bills and food, would be ${h.m(short)} short every month on SSP alone, and ${h.m(short * M / W * S.maxWeeks)} short over the ${S.maxWeeks} weeks. That gap is what income protection insurance is bought to fill: a monthly benefit, chosen by the buyer, that starts after a waiting time called the deferred period. Savings, a partner’s pay or a generous employer scheme can fill part of it instead. The calculator shows the gap for your own earnings and outgoings.`;
+    const sm = (h.E.sspWeekly((PAY * M) / W) * W) / M, short = Math.max(0, NEED - sm);
+    return `Most employees who fall ill get only the legal minimum, Statutory Sick Pay (SSP), once any company sick pay in their contract has run out. For ${h.P.taxYear} that is at most ${h.m2(S.weekly)} a week, about ${h.m(sm)} a month, for up to ${S.maxWeeks} weeks. Set against ordinary outgoings, the gap is large. Someone earning ${h.m(PAY)} a month before tax, with ${h.m(NEED)} a month of rent or mortgage, bills and food, would be ${h.m(short)} short of those outgoings every month on SSP alone, and ${h.m(short * M / W * S.maxWeeks)} short over the ${S.maxWeeks} weeks. That gap is what income protection insurance is bought to fill: a monthly benefit, chosen by the buyer, that starts after a waiting time called the deferred period. Savings, a partner’s pay or a generous employer scheme can fill part of it instead. The calculator shows the gap for your own earnings and outgoings.`;
   },
   faqs: (h) => [
     { q: 'How much income protection do I need on top of sick pay?', a: `Start from your monthly outgoings, not your salary. Take off what would still come in: sick pay of about ${h.m((h.P.ssp.weekly * h.P.weeksPerYear) / h.P.monthsPerYear)} a month at most, a partner’s pay you could rely on, and any rent or interest you receive. What is left is the monthly benefit to aim for. Insurers cap the benefit at a share of earnings, so the quote shows how close you can get.` },
@@ -37,7 +39,8 @@ export default definePage({
     return `
 <h2>How much of your pay sick pay replaces</h2>
 <p>The ${h.pc(S.earningsShare)} rule only applies below average weekly earnings of ${h.m2(cut)}: above that, everyone gets the same flat amount, whatever their salary. So the higher the pay, the smaller the share that sick pay replaces, and the larger the gap a policy has to fill.</p>
-${h.table(['Average weekly earnings', 'Sick pay a week', 'Share of pay replaced', `Pay lost over ${S.maxWeeks} weeks`], rows, `${h.P.taxYear} rate, read on ${h.src('gov_ssp', 'GOV.UK')} and in the ${h.src('gov_rates', 'DWP rates table')}. Before tax and National Insurance.`, ['r', 'r', 'r', 'r'])}
+<p>This table compares sick pay with your <strong>pay</strong>. The calculator above compares it with your <strong>outgoings</strong>, so its figure differs unless your outgoings equal your pay. It shows both lines, one under the other.</p>
+${h.table(['Average weekly earnings', 'Sick pay a week', 'Share of pay replaced', `Pay lost against your usual pay over ${S.maxWeeks} weeks`], rows, `${h.P.taxYear} rate, read on ${h.src('gov_ssp', 'GOV.UK')} and in the ${h.src('gov_rates', 'DWP rates table')}. Before tax and National Insurance.`, ['r', 'r', 'r', 'r'])}
 
 <h2>The April 2026 reform: more for short absences, little for long ones</h2>
 <p>${h.src('gov_ssp_2026', 'GOV.UK’s guidance for absences that span the change')} sets out the transition: waiting days no longer apply from ${h.D.ssp}, and an employee who earned too little to qualify before that date becomes entitled. What stayed the same is the length. SSP still runs for ${S.maxWeeks} weeks at most, linked periods of sickness less than ${S.linkGapWeeks} weeks apart still count as one, and a series of linked periods ends entitlement after three years. For a short absence the reform pays more; for a long one it changes almost nothing.</p>

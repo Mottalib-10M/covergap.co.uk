@@ -15,7 +15,7 @@ export default definePage({
   title: 'Over 50s Life Insurance 2026: When Premiums Pass the Payout',
   description: 'Over 50s life insurance in 2026: type your premium and payout to see the age at which you have paid in more than it pays, and the ONS odds of reaching it.',
   h1: 'Over 50s life insurance: the age you pay in more than it pays out',
-  intro: 'An over 50s plan pays a fixed sum on death for a fixed monthly premium. Type the figures from your quote; the calculator uses only those and the ONS life tables.',
+  intro: 'An over 50s plan pays a fixed sum on death for a fixed monthly premium. No quote yet? Leave the example, or try the price from an advert or leaflet: the calculator uses only the figures you type and official UK death statistics.',
   resume: (h) => {
     const r = h.E.over50({ age: AGE, sex: 'm', premium: PREM, sum: SUM, stopAge: STOP });
     const f = h.E.over50({ age: AGE, sex: 'f', premium: PREM, sum: SUM, stopAge: STOP });

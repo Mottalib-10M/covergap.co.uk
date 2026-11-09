@@ -19,7 +19,7 @@
 export interface LibellesTrame { exemple: string; exempleAide: string; lireTout: string; faqAide: string; plusDeReglages: string; actuellement: string }
 
 export const LIBELLES_TRAME: Record<string, LibellesTrame> = {
-  en: { exemple: 'Example, not your result yet', exempleAide: 'change a figure to see yours', lireTout: 'Show the whole paragraph', faqAide: 'Tap a question to see the answer.', plusDeReglages: 'More about your case (optional, already filled in)', actuellement: 'Now' },
+  en: { exemple: 'Example, not your result yet', exempleAide: 'change a figure to see yours', lireTout: 'Show the whole paragraph', faqAide: 'Tap a question to see the answer.', plusDeReglages: 'More about your case (optional, already filled in)', actuellement: '' },
   fr: { exemple: 'Exemple, pas encore votre résultat', exempleAide: 'modifiez un chiffre pour voir le vôtre', lireTout: 'Lire tout le paragraphe', faqAide: 'Touchez une question pour voir la réponse.', plusDeReglages: 'Plus de détails sur votre cas (facultatif, déjà remplis)', actuellement: 'Actuellement' },
   es: { exemple: 'Ejemplo, todavía no es su resultado', exempleAide: 'cambie una cifra para ver el suyo', lireTout: 'Leer todo el párrafo', faqAide: 'Toque una pregunta para ver la respuesta.', plusDeReglages: 'Más datos de su caso (opcional, ya rellenos)', actuellement: 'Ahora' },
   de: { exemple: 'Beispiel, noch nicht Ihr Ergebnis', exempleAide: 'ändern Sie eine Zahl, um Ihres zu sehen', lireTout: 'Ganzen Absatz lesen', faqAide: 'Tippen Sie auf eine Frage, um die Antwort zu sehen.', plusDeReglages: 'Mehr zu Ihrem Fall (freiwillig, schon ausgefüllt)', actuellement: 'Derzeit' },
@@ -51,6 +51,10 @@ export function resultatExemple(touched: Record<string, boolean> | undefined): b
 /** Ligne « Actuellement : … » d'un repli : libellé et valeur affichée de chaque champ caché.
  *  Deux-points précédé d'une espace insécable en français seulement. */
 export function resumeRepli(lang: string | undefined, champs: Array<{ label: string; valeur: string }>): string {
+  // covergap.co.uk, testers of 2026-11-09 (second round): “Now: Nation United Kingdom” read as one odd phrase.
+  // Each field reads “Label: value”, and the English line has no “Now:” prefix (the fold's title says it all).
   const deuxPoints = /^fr\b/i.test(String(lang ?? '')) ? '\u00a0:' : ':';
-  return `${libellesTrame(lang).actuellement}${deuxPoints} ${champs.map((c) => `${c.label} ${c.valeur}`).join(' · ')}`;
+  const prefixe = libellesTrame(lang).actuellement;
+  const liste = champs.map((c) => `${c.label}${deuxPoints} ${c.valeur}`).join(' · ');
+  return prefixe ? `${prefixe}${deuxPoints} ${liste}` : liste;
 }

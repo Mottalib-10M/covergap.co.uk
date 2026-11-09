@@ -10,7 +10,7 @@ export default definePage({
   related: ['life-and-critical-illness-cover', 'income-protection-insurance', 'self-employed-income-protection', 'income-protection-deferred-period'],
   sources: ['gov_ssp', 'gov_esa', 'ittoia_735'],
   slug: 'critical-illness-cover',
-  nav: 'Critical illness or income',
+  nav: 'Critical illness or income protection',
   card: 'A one-off lump sum against a monthly income: how many months each one pays for, set against your outgoings.',
   title: 'Critical Illness Cover 2026: Lump Sum or Monthly Income',
   description: 'Critical illness cover in 2026 against income protection: how many months of outgoings a lump sum pays for, and what a monthly benefit adds up to over time.',

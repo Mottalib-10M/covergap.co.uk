@@ -228,13 +228,13 @@ describe('8. FAQ repliée', () => {
 });
 
 describe('9. champs repliés : valeur actuelle visible', () => {
-  it('le titre du repli dit « Actuellement : … » avec chaque valeur cachée, localisé', () => {
+  it('le titre du repli dit « Libellé : valeur » pour chaque valeur cachée, localisé (en anglais sans « Now: », covergap 2026-11-09)', () => {
     const fr = renderToStaticMarkup(createElement(MiniSim, { kind: 'k', lang: 'fr' }));
     expect(fr).toContain('Plus de détails sur votre cas');
-    expect(fr).toMatch(/data-actuellement[^>]*>Actuellement\u00a0: Âge 40\u00a0ans · Statut Non-cadre</);
+    expect(fr).toMatch(/data-actuellement[^>]*>Actuellement\u00a0: Âge\u00a0: 40\u00a0ans · Statut\u00a0: Non-cadre</);
     const en = renderToStaticMarkup(createElement(MiniSimAutonome, { kind: 'k', lang: 'en', defaults: { age: 61 } }));
-    expect(en).toMatch(/data-actuellement[^>]*>Now: Âge 61\u00a0ans · Statut Non-cadre</);
-    expect(resumeRepli('es', [{ label: 'Edad', valeur: '40' }])).toBe('Ahora: Edad 40');
+    expect(en).toMatch(/data-actuellement[^>]*>Âge: 61\u00a0ans · Statut: Non-cadre</);
+    expect(resumeRepli('es', [{ label: 'Edad', valeur: '40' }])).toBe('Ahora: Edad: 40');
   });
   it('les champs facultatifs sont dans le repli, les autres en dehors', () => {
     const h = renderToStaticMarkup(createElement(MiniSim, { kind: 'k', lang: 'fr' }));

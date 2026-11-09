@@ -6,16 +6,16 @@ export default definePage({
   id: 'income-protection-insurance',
   group: 'income',
   order: 100,
-  tool: { kind: 'mini:gap', props: { pay: 2800, need: 2000, full: 4, half: 0, ip: 0, def: 13 } },
+  tool: { kind: 'mini:gap', props: { pay: 2800, need: 2000, full: 4, half: 0, u25: 0, ip: 0, def: 13 } },
   related: ['statutory-sick-pay-income-protection', 'income-protection-deferred-period', 'self-employed-income-protection', 'critical-illness-cover'],
   sources: ['gov_ssp', 'gov_ssp_2026', 'gov_esa', 'gov_rates', 'ittoia_735'],
   slug: 'income-protection-insurance',
-  nav: 'Income protection gap',
+  nav: 'Income protection: how much',
   card: 'Your income week by week through company sick pay, SSP and New Style ESA, and how much income protection would add.',
   title: 'Income Protection Insurance 2026/27: Your Sick Pay Gap',
   description: 'Income protection insurance in 2026/27: what company sick pay, SSP and New Style ESA pay week by week for two years, and the gap a policy would have to fill.',
   h1: 'Income protection: what you would be short if illness stopped your pay',
-  intro: 'Income protection is insurance that pays you a monthly income while illness or injury keeps you off work. Enter your pay and outgoings to see the gap it would have to fill, after sick pay and state benefits for 2026/27.',
+  intro: 'Income protection is insurance that pays you a monthly income while illness or injury keeps you off work. Enter your pay and outgoings to see the monthly benefit to look for and the gap it would fill, after sick pay and state benefits for 2026/27.',
   resume: (h) => {
     const g = h.E.sickGap(CASE);
     const withIp = h.E.sickGap({ ...CASE, ipMonthly: 1500, deferredWeeks: 13 });
@@ -30,14 +30,17 @@ export default definePage({
   body: (h) => {
     const tl = h.E.sickTimeline(CASE);
     const W = h.P.weeksPerYear, M = h.P.monthsPerYear;
-    const rows = tl.map((p) => [p.label, `${h.num(p.fromWeek + 1)} to ${h.num(p.toWeek)}`, h.m2(p.weekly), h.m((p.weekly * W) / M)]);
+    // Plain names for the phases (testers of 2026-11-09, second round: “work-related activity group” lost them).
+    const PLAIN: Record<string, string> = { 'New Style ESA, assessment rate': `New Style ESA, first ${h.P.esa.assessmentWeeks} weeks`, 'New Style ESA, work-related activity group': 'New Style ESA, until the year ends', 'New Style ESA, support group': 'New Style ESA, the most severely ill', 'Statutory Sick Pay': 'Statutory Sick Pay (SSP)' };
+    const rows = tl.map((p) => [PLAIN[p.label] ?? p.label, `${h.num(p.fromWeek + 1)} to ${h.num(p.toWeek)}`, h.m2(p.weekly), h.m((p.weekly * W) / M)]);
     const half = h.E.sickGap({ ...CASE, fullWeeks: 13, halfWeeks: 13 });
     const sup = h.E.sickGap({ ...CASE, support: true });
     return `
-<h2>The timeline the calculator follows</h2>
-<p>The table sets out the case loaded above, phase by phase. Weeks are counted from the first day off. Company pay is treated as never falling below Statutory Sick Pay while SSP is due, which is how employers normally pay it: SSP is part of the company payment, not on top of it. When SSP ends at week ${h.P.ssp.maxWeeks}, the calculator assumes a claim for ${h.src('gov_esa', 'New Style ESA')} straight away, paid at the assessment rate for ${h.P.esa.assessmentWeeks} weeks and then, in the work-related activity group, for up to ${h.P.esa.wragDays} days in all.</p>
-${h.table(['Phase', 'Weeks', 'A week', 'A month'], rows, `Employee on ${h.m(CASE.monthlyPay)} a month, ${CASE.fullWeeks} weeks of full company sick pay, 25 or over (the only age that changes ESA). Amounts before tax, DWP rates ${h.P.taxYear}.`, ['l', 'l', 'r', 'r'])}
-<p>The last line is the one people rarely see written down. Once New Style ESA in the work-related activity group runs out, there is no more contribution-based income at all; what follows depends on Universal Credit, which looks at a partner’s earnings and at savings above ${h.m(h.P.uc.capitalLower)}. For someone placed in the support group after the assessment, ESA continues at ${h.m2(h.P.esa.support)} a week with no end date. On the same pay and outgoings, that changes the two-year shortfall to ${h.m(sup.shortfall)}.</p>
+<h2>What comes in, month by month, if you cannot work</h2>
+<p>The table follows the example above, counted in weeks from the first day off. First your employer’s own sick pay, if your contract gives any. Then the legal minimum, Statutory Sick Pay (SSP), until week ${h.P.ssp.maxWeeks}. After that, a state benefit for people too ill to work, ${h.src('gov_esa', 'New Style ESA')} (Employment and Support Allowance), if you have paid enough National Insurance: ${h.m2(h.P.esa.assessment25)} a week from age 25, for up to one year in most cases. After that: nothing, unless you qualify for Universal Credit.</p>
+${h.table(['Phase', 'Weeks', 'A week', 'A month'], rows, `Employee on ${h.m(CASE.monthlyPay)} a month, ${CASE.fullWeeks} weeks of full company sick pay, aged 25 or over. Under 25, the first ${h.P.esa.assessmentWeeks} weeks of ESA pay ${h.m2(h.P.esa.assessmentUnder25)} a week instead. Amounts before tax, DWP rates ${h.P.taxYear}.`, ['l', 'l', 'r', 'r'])}
+<p>The last line, £0, is the one people rarely see written down. Universal Credit, which may follow, looks at a partner’s earnings and at savings above ${h.m(h.P.uc.capitalLower)}. A few people, the most severely ill, are placed after an assessment in what the DWP (the Department for Work and Pensions) calls the support group: their ESA continues at ${h.m2(h.P.esa.support)} a week with no end date. On the same pay and outgoings, that changes the two-year shortfall to ${h.m(sup.shortfall)}.</p>
+<p>Close to retirement, two dates matter. New Style ESA can only be claimed under State Pension age, as ${h.src('gov_esa', 'GOV.UK’s eligibility rules')} say, and an income protection policy stops at the age chosen when it is bought, often the planned retirement age. From that age, the state’s income is the State Pension instead, if your National Insurance record qualifies.</p>
 
 <h2>What changed in April 2026</h2>
 <p>From ${h.D.ssp}, ${h.src('gov_ssp_2026', 'GOV.UK’s guidance')} sets out two changes to Statutory Sick Pay. It is now paid from the first day of sickness, where it used to start only after unpaid waiting days, and the Lower Earnings Limit no longer shuts anyone out: a low earner who used to get nothing now gets ${h.pc(h.P.ssp.earningsShare)} of average weekly earnings, capped at the flat rate. For most full-time employees the weekly amount is the flat ${h.m2(h.P.ssp.weekly)}, and the ${h.P.ssp.maxWeeks}-week limit is unchanged. So the reform helps with short absences and low pay; it does nothing for the months after week ${h.P.ssp.maxWeeks}, which is where a long absence becomes expensive.</p>

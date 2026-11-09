@@ -8,4 +8,7 @@ export interface MiniSpec {
   /** `touched`: the fields the reader has changed (naive testers, 2026-11-08). While it is empty the
    *  component shows "Example, not your result yet"; a spec may also use it to hold back a verdict. */
   run: (v: Record<string, number>, touched?: Record<string, boolean>) => MiniOut;
+  /** What the example assumes, in plain words, for the "Example" mention (testers of 2026-11-09, second
+   *  round): “a man of 40 taking a 25-year policy”. Without it the mention lists the visible fields. */
+  exemple?: (v: Record<string, number>) => string;
 }

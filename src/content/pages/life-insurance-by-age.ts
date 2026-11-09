@@ -24,7 +24,7 @@ export default definePage({
     { q: 'Are the odds of a claim lower for women than for men of the same age?', a: `Yes, at every working age in the ONS tables. A man of 40 taking twenty years of cover has a ${h.pc(h.odds(40, 20, 'm'))} chance of dying within the term, a woman of the same age ${h.pc(h.odds(40, 20, 'f'))}. The gap narrows in old age. The tool shows both, and the nation selector shows how much the figures move between England, Wales, Scotland and Northern Ireland.` },
   ],
   body: (h) => {
-    const ages = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65];
+    const ages = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]; // to 70, as the home page table (testers of 2026-11-09)
     const rows = ages.map((a) => [`${a}`, h.pc(h.odds(a, 10, 'm')), h.pc(h.odds(a, 10, 'f')), h.pc(h.odds(a, 20, 'm')), h.pc(h.odds(a, 20, 'f')), left(a, 'm'), left(a, 'f')]);
     // Life expectancy in the site's one wording: years left, then the age reached (naive testers, 2026-11-09).
     function left(a: number, x: 'm' | 'f') { const e = h.E.lifeExpectancy(a, x); return `${h.num1(e)} (to ${h.num(Math.round(a + e))})`; }
