@@ -1,0 +1,28 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { AUTHOR_NAME, CONTACT_EMAIL, LAST_UPDATED, SITE_NAMES } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+import { helpers } from '../../lib/helpers';
+const h = helpers(true);
+const lang = 'en';
+---
+<PageLayout title={`Editorial policy of ${SITE_NAMES[lang]}: sources, tests, corrections`} description="Which GOV.UK, legislation and ONS pages Cover Gap uses, why it prints no insurance prices, how the engine is tested and how an error in a rate or a sum is corrected." lang={lang} noindex={true} breadcrumbs={[{ label: 'Editorial policy' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none">
+    <h1>Editorial and corrections policy</h1>
+    <p>People read these pages when they are deciding whether to spend money every month for years on cover they hope never to use, or when illness or a death has already happened. A wrong sick pay rate or an invented average premium can push them into a bad decision. So every rate on the site is tied to the GOV.UK page it comes from, every probability to the ONS table, and every figure is computed, never typed.</p>
+    <h2>Who is responsible</h2><p>{AUTHOR_NAME}, reachable at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+    <h2>The sources we use</h2>
+    <ul>
+      <li>the DWP’s benefit and pension rates for {h.P.taxYear}, and the GOV.UK guides to Statutory Sick Pay, New Style ESA, Bereavement Support Payment and the Funeral Expenses Payment;</li>
+      <li>GOV.UK’s guidance on inheritance tax and trusts, legislation.gov.uk for the income tax rule on insurance benefits, and HMRC’s Business Income Manual for key person cover;</li>
+      <li>the ONS national life tables for the United Kingdom and its four nations, 2022 to 2024, reused under the Open Government Licence;</li>
+      <li>the FCA’s consumer pages on funeral plans, linked and described in our own words.</li>
+    </ul>
+    <h2>What we refuse to print</h2><p>Insurance prices. Insurer and broker quotes are their owners’ data, industry claims statistics are not licensed for reuse here, and the “average cost by age” tables found on broker sites come with no method. We print no list of providers either: the FCA’s terms do not allow its register to be copied onto another site, so we send readers to the register itself. We describe no illnesses: the site is about contracts, definitions and money.</p>
+    <h2>Testing</h2><p>Every build runs the engine tests: payout odds recomputed by hand from the ONS rates, SSP capped at the flat rate and at {h.pc(h.P.ssp.earningsShare)} of earnings, the ESA phases and their time limit, the Bereavement Support Payment totals, a mortgage that reaches zero on its last payment and GOV.UK’s inheritance tax example. A failing test stops the build.</p>
+    <h2>Review cycle</h2><p>Rates are reread when the DWP publishes the next year’s figures and at the start of each tax year; the life tables when the ONS publishes a new edition. Updates are made by hand. Each page shows the date the figures were last read.</p>
+    <h2>Corrections</h2>
+    <ol><li>We open the source again.</li><li>We correct the parameter file or the engine and add a test for the case.</li><li>The pages rebuild and show the new date.</li></ol>
+    <h2>Independence</h2><p>No insurer, broker, comparison site or funeral plan provider pays for or reviews what is published here; the site takes no commission and carries no affiliate link or callback form. See also the <a href={route('method', lang)}>method</a>. Version: {LAST_UPDATED}.</p>
+  </div>
+</PageLayout>

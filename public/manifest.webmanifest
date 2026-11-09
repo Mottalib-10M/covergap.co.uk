@@ -1,0 +1,21 @@
+{
+ "name": "Cover Gap",
+ "short_name": "Cover Gap",
+ "description": "Life cover, income protection and funeral plans set against what the state pays in 2026/27, with the chance a policy pays out from ONS life tables. No form.",
+ "start_url": "/en/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#1F5F5B",
+ "icons": [
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

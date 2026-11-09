@@ -1,0 +1,189 @@
+{
+  "_about": "Every statutory figure used by the engine or shown on a page lives here, never typed into a page (RECETTE §4, §17.4). Each value was read on the cited official source on retrieved_at. No insurance price is held anywhere on the site: no source with the right to publish one was found (reports/prevoyance-uk-controle-2026-11-07.md).",
+  "year": 2026,
+  "taxYear": "2026/27",
+  "taxYearLong": "6 April 2026 to 5 April 2027",
+  "retrieved_at": "2026-11-07",
+  "valid_from": "2026-04-06",
+  "valid_to": "2027-04-05",
+  "ssp": {
+    "weekly": 123.25,
+    "earningsShare": 0.8,
+    "maxWeeks": 28,
+    "reformFrom": "2026-04-06",
+    "fitNoteAfterDays": 7,
+    "linkGapWeeks": 8
+  },
+  "esa": {
+    "assessmentUnder25": 75.65,
+    "assessment25": 95.55,
+    "wrag": 95.55,
+    "support": 145.9,
+    "supportComponent": 50.35,
+    "assessmentWeeks": 13,
+    "wragDays": 365,
+    "pensionDisregard": 85,
+    "pensionTaper": 0.5,
+    "permittedWeeklyEarnings": 203.5,
+    "permittedHours": 16
+  },
+  "uc": {
+    "single25": 424.9,
+    "singleUnder25": 338.58,
+    "couple25": 666.97,
+    "lcwra": 217.26,
+    "capitalLower": 6000,
+    "capitalUpper": 16000,
+    "tariffPer250": 4.35
+  },
+  "bsp": {
+    "higherLump": 3500,
+    "higherMonthly": 350,
+    "standardLump": 2500,
+    "standardMonthly": 100,
+    "months": 18,
+    "fullClaimMonths": 3,
+    "lumpClaimMonths": 12,
+    "lastClaimMonths": 21,
+    "benefitsIgnoredMonths": 12
+  },
+  "funeral": {
+    "otherExpenses": 1000,
+    "withPlan": 120,
+    "claimMonths": 6,
+    "fcaFrom": "2022-07-29"
+  },
+  "iht": {
+    "nrb": 325000,
+    "rnrb": 175000,
+    "taperThreshold": 2000000,
+    "taperDivisor": 2,
+    "rate": 0.4,
+    "giftYears": 7,
+    "trustExitYears": 2
+  },
+  "weeksPerYear": 52,
+  "monthsPerYear": 12,
+  "sources": {
+    "gov_rates": {
+      "url": "https://www.gov.uk/government/publications/benefit-and-pension-rates-2026-to-2027/proposed-benefit-and-pension-rates-2026-to-2027",
+      "label": {
+        "en": "DWP, Benefit and pension rates 2026 to 2027 (GOV.UK)"
+      }
+    },
+    "gov_ssp": {
+      "url": "https://www.gov.uk/statutory-sick-pay",
+      "label": {
+        "en": "GOV.UK, Statutory Sick Pay (SSP)"
+      }
+    },
+    "gov_ssp_2026": {
+      "url": "https://www.gov.uk/guidance/sickness-absences-that-start-before-and-end-on-or-after-6-april-2026",
+      "label": {
+        "en": "GOV.UK, Sickness absences that start before and end on or after 6 April 2026"
+      }
+    },
+    "gov_esa": {
+      "url": "https://www.gov.uk/employment-support-allowance",
+      "label": {
+        "en": "GOV.UK, Employment and Support Allowance (ESA)"
+      }
+    },
+    "gov_bsp": {
+      "url": "https://www.gov.uk/bereavement-support-payment",
+      "label": {
+        "en": "GOV.UK, Bereavement Support Payment"
+      }
+    },
+    "gov_funeral": {
+      "url": "https://www.gov.uk/funeral-payments",
+      "label": {
+        "en": "GOV.UK, Funeral Expenses Payment"
+      }
+    },
+    "gov_iht": {
+      "url": "https://www.gov.uk/inheritance-tax",
+      "label": {
+        "en": "GOV.UK, Inheritance Tax"
+      }
+    },
+    "gov_valuing": {
+      "url": "https://www.gov.uk/valuing-estate-of-someone-who-died",
+      "label": {
+        "en": "GOV.UK, Valuing the estate of someone who has died"
+      }
+    },
+    "gov_trusts": {
+      "url": "https://www.gov.uk/trusts-taxes",
+      "label": {
+        "en": "GOV.UK, Trusts and taxes"
+      }
+    },
+    "gov_trusts_iht": {
+      "url": "https://www.gov.uk/guidance/trusts-and-inheritance-tax",
+      "label": {
+        "en": "GOV.UK, Trusts and Inheritance Tax"
+      }
+    },
+    "gov_uc": {
+      "url": "https://www.gov.uk/universal-credit",
+      "label": {
+        "en": "GOV.UK, Universal Credit"
+      }
+    },
+    "ittoia_735": {
+      "url": "https://www.legislation.gov.uk/ukpga/2005/5/section/735",
+      "label": {
+        "en": "Income Tax (Trading and Other Income) Act 2005, section 735 (legislation.gov.uk)"
+      }
+    },
+    "bim45525": {
+      "url": "https://www.gov.uk/hmrc-internal-manuals/business-income-manual/bim45525",
+      "label": {
+        "en": "HMRC Business Income Manual, BIM45525: key person insurance"
+      }
+    },
+    "fca_funeral": {
+      "url": "https://www.fca.org.uk/consumers/funeral-plans-check-provider-authorised",
+      "label": {
+        "en": "FCA, Funeral plans: check your provider is authorised"
+      }
+    },
+    "fca_register": {
+      "url": "https://register.fca.org.uk/",
+      "label": {
+        "en": "FCA Financial Services Register"
+      }
+    },
+    "ons_nlt": {
+      "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/lifeexpectancies/datasets/nationallifetablesunitedkingdomreferencetables",
+      "label": {
+        "en": "ONS, National life tables: UK, 2022 to 2024"
+      }
+    },
+    "ons_nlt_nations": {
+      "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/lifeexpectancies/datasets/nationallifetablesenglandreferencetables",
+      "label": {
+        "en": "ONS, National life tables: England (Wales, Scotland and Northern Ireland published alongside)"
+      }
+    },
+    "ogl": {
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "label": {
+        "en": "Open Government Licence v3.0"
+      }
+    },
+    "fca_ps2115": {
+      "url": "https://www.fca.org.uk/publications/policy-statements/ps21-15-regulation-funeral-plans-feedback-cp21-20-and-final-rules",
+      "label": {
+        "en": "FCA, PS21/15: Regulation of funeral plans, final rules"
+      }
+    },
+    "gov_intestacy": {
+      "url": "https://www.gov.uk/inherits-someone-dies-without-will",
+      "label": {
+        "en": "GOV.UK, Who inherits if someone dies without a will"
+      }
+    }
+  }
+}

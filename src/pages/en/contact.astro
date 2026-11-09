@@ -1,0 +1,22 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { CONTACT_EMAIL, LAST_UPDATED, SITE_NAMES } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+const lang = 'en';
+---
+<PageLayout title={`Contact ${SITE_NAMES[lang]}: a rate, a figure, the widget`} description="Write to Cover Gap when a state benefit rate or a calculation looks wrong, when the DWP publishes new rates, or to embed the life cover calculator on your own site." lang={lang} noindex={true} breadcrumbs={[{ label: 'Contact' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none">
+    <h1>Contact</h1>
+    <p>Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. A person reads every message.</p>
+    <h2>A figure looks wrong</h2>
+    <p>Send the page address, the values you entered and the figure you expected, with the GOV.UK page or the ONS table you are relying on if you have it. We reread the source, correct the parameter file or the engine, add a test for the case and date the change.</p>
+    <h2>What we cannot do</h2>
+    <p>We do not sell insurance, give quotes or advise on a policy, and we cannot look at a real claim, a policy document or a benefit decision. Please do not send names, National Insurance numbers, policy numbers or medical details. Questions about a policy go to the insurer; a complaint about one can go to the Financial Ombudsman Service. Questions about a benefit go to the DWP through GOV.UK. MoneyHelper, the government-backed guidance service, offers free general guidance.</p>
+    <h2>Using the calculator on your own site</h2>
+    <p>Advice centres, HR teams, unions and personal finance writers can show the life cover calculator in an iframe at no cost. The code and the conditions are on the <a href={route('widget', lang)}>embed page</a>.</p>
+    <h2>Publisher</h2>
+    <LegalIdentity lang={lang} />
+    <p>Updated: {LAST_UPDATED}.</p>
+  </div>
+</PageLayout>

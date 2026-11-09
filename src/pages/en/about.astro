@@ -1,0 +1,32 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { LAST_UPDATED, AUTHOR_NAME, CONTACT_EMAIL, AUTHOR_ROLE } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+import { personSchema, organizationSchema, breadcrumbSchema, profilePageSchema } from '../../lib/seo';
+import { displayDate } from '../../lib/format';
+import { PAGES } from '../../lib/guides';
+import { helpers } from '../../lib/helpers';
+const lang = 'en';
+const h = helpers(true);
+const n = PAGES.length + 1;
+const nSrc = Object.keys(h.P.sources).length;
+---
+<PageLayout title="Cover Gap: who works out these life cover and sick pay sums" description="Who publishes Cover Gap, why it sets life cover and income protection against state benefits for 2026/27 instead of quotes, and where each figure comes from." lang={lang} jsonLd={[personSchema(lang), organizationSchema(lang), profilePageSchema({ path: route('about', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'About', path: route('about', lang) }])]} breadcrumbs={[{ label: 'About' }]}>
+  <header class="mb-6"><p class="kicker">About</p><h1 class="mt-1 text-3xl font-bold text-navy-900 md:text-4xl">Who works out the figures on Cover Gap</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <div class="not-prose mb-6"><p class="text-lg font-semibold text-navy-900">{AUTHOR_NAME}</p><p class="text-navy-700">{AUTHOR_ROLE[lang]}</p></div>
+    <p>Cover Gap is published by Radif Partners, a company that builds free calculators on public data. This site is for people in the United Kingdom who are wondering whether they need life insurance, income protection or a funeral plan, and how much: a parent who has just taken on a mortgage, an employee reading their sick pay policy, a self-employed plumber, someone in their sixties weighing up an over 50s plan they saw advertised.</p>
+    <h2>Why this site exists</h2>
+    <p>Search for life insurance and nearly every page ends in a quote form. Comparison sites ask for a name, an address, a date of birth and health details before any real price. Broker pages print tables of “average premiums by age” with no source. None of them starts from what the state already pays: Statutory Sick Pay, which changed on {h.D.ssp}, New Style ESA, Bereavement Support Payment, the Funeral Expenses Payment. Yet those amounts decide how big the gap is.</p>
+    <p>So this site does the opposite. It shows the gap first, with the state’s share taken off, and the odds that a policy ever pays, from the ONS life tables. It shows no price, because we found no source of insurance prices that a website is allowed to republish, and a figure we cannot trace is not one we print.</p>
+    <h2>Where the figures come from</h2>
+    <p>State rates come from the DWP’s published rates for {h.P.taxYear} and the GOV.UK guides; tax thresholds from GOV.UK and legislation.gov.uk; death rates from the ONS national life tables. The parameter file cites {nSrc} pages, all read on {displayDate(h.P.retrieved_at, 'en-GB')}. The <a href={route('method', lang)}>method page</a> gives every formula and every limit.</p>
+    <h2>What we are not</h2>
+    <p>We are not an insurer, a broker, a comparison site, a financial adviser or the DWP. We do not arrange insurance, we do not recommend a product or a provider and nothing here is a personal recommendation. Whether a policy suits you, and whether an insurer will accept you, are for the insurer or an FCA-authorised adviser. Benefit claims are made only on GOV.UK.</p>
+    <h2>How the site is paid for</h2>
+    <p>It is free and needs no account, no email and no phone number. We sell no policies, take no commission and pass no details to anyone. If advertising is added one day it will never sit above a calculator, and it cannot use what you type, because nothing you type leaves your browser.</p>
+    <h2>Tell us when a figure is wrong</h2>
+    <p>Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the page, the values you entered and the source you rely on. The <a href={route('editorial', lang)}>editorial policy</a> explains how a correction is made. The site has {n} indexed pages, listed in the footer.</p>
+    <p class="text-sm text-navy-600">Rates last read on <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time>.</p>
+  </div>
+</PageLayout>

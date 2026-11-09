@@ -1,0 +1,32 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { AUTHOR_NAME, CLARITY_ID, CONTACT_EMAIL, GA4_ID, LAST_UPDATED, LEGAL, SITE_NAMES, SITE_URL } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+const lang = 'en';
+---
+<PageLayout title={`Legal notice of ${SITE_NAMES[lang]}: publisher, host, liability`} description="Legal notice of Cover Gap: the publisher Radif Partners, the host, what the UK life cover, income protection and funeral calculators cover, liability and reuse of public data." lang={lang} noindex={true} breadcrumbs={[{ label: 'Legal notice' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none">
+    <h1>Legal notice</h1>
+    <p>Information given under Article 6 III-1 of French law no. 2004-575 of 21 June 2004, the publisher being established in France.</p>
+    <h2>Publisher</h2>
+    <LegalIdentity lang={lang} />
+    <p>Publication director: {AUTHOR_NAME}, responsible for the content of {SITE_URL}.</p>
+    <h2>Hosting provider</h2>
+    <LegalIdentity mode="hosting" lang={lang} />
+    <h2>What the site does</h2>
+    <p>The site sets the life cover, income protection and funeral cover a UK household might need against what the state already pays (Statutory Sick Pay, New Style ESA, Bereavement Support Payment, Funeral Expenses Payment), and gives the chance that a term policy pays out from the ONS national life tables. It shows no insurance prices and sells nothing. It is not an insurer, broker, comparison site or funeral plan provider, is not authorised by the Financial Conduct Authority and has no connection with the DWP, HMRC, the ONS, the FCA or any insurer.</p>
+    <h2>General information, not advice</h2>
+    <p>The figures are estimates built on the assumptions set out on the <a href={route('method', lang)}>method page</a>. They are not financial, tax or legal advice and they are not a regulated personal recommendation. Benefit entitlement is decided by the DWP or your employer, and the cover, premium and terms of a policy by the insurer; a decision to buy, change or cancel a policy can be checked with a regulated financial adviser.</p>
+    <h2>Liability</h2>
+    <p>Each rate and rule is taken from the GOV.UK, HMRC, ONS, FCA or legislation page cited with it, and the calculation engine is tested before each build. The publisher gives no guarantee that no error or later change in the law remains and cannot be held liable for any decision taken on the basis of this site alone. Errors can be reported through the <a href={route('contact', lang)}>contact</a> page.</p>
+    <h2>Intellectual property and reuse</h2>
+    <p>Texts, graphics and code belong to the publisher. Legislation from legislation.gov.uk, guidance and rates from GOV.UK and the ONS national life tables are public sector information reused under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="nofollow noopener">Open Government Licence v3.0</a>, with the source named on each page.</p>
+    {/* gen-legal-pages:terms */}
+    <h2>Personal data and cookies</h2>
+    {GA4_ID ? (<p>What you type in the calculators stays in your browser. The site sets Google Analytics audience measurement cookies (<code>_ga</code>, <code>_ga_{GA4_ID.replace('G-', '')}</code>, 13 months at most), with no advertising{CLARITY_ID && '; page stability is monitored with Microsoft Clarity, cookie-free'}. Details, legal basis and how to object: <a href={route('privacy', lang)}>privacy policy</a> and <a href={route('cookies', lang)}>cookies</a> page.</p>) : (<p>What you type in the calculators stays in your browser and the site sets no cookies{CLARITY_ID && '; page stability is monitored anonymously with Microsoft Clarity, cookie-free'}. See the <a href={route('privacy', lang)}>privacy policy</a> and the <a href={route('cookies', lang)}>cookies</a> page.</p>)}
+    {/* /gen-legal-pages:terms */}
+    <h2>Reporting unlawful content</h2><p><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>, with the page address and the reason.</p>
+    <h2>Governing law</h2><p>French law. Failing an amicable solution, the courts of {LEGAL.jurisdiction} have jurisdiction, without prejudice to the mandatory rules protecting consumers in their country of residence. Updated: {LAST_UPDATED}.</p>
+  </div>
+</PageLayout>
