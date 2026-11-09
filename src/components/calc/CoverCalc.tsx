@@ -8,6 +8,10 @@
  * Bottom bar (phones): reads "Example:" until a field is changed, and steps aside whenever it would sit over a
  * field of the form or a field has focus (report of 2026-11-08: it hid half of "Your age"), and while the result
  * itself is on screen.
+ * Naive testers, 2026-11-09: the three questions that change the answer most (partner, child at home, age and
+ * sex) come first; sex is no longer folded (a woman who did not open the fold got a man's odds); the fold says
+ * that its amounts are already counted; a "No" to children clears the children's lump sums the reader has not
+ * typed; plain words in the result; what to do with the figure, under it.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import NumberField from '../ui/NumberField';
@@ -19,14 +23,17 @@ import { formatMoney, formatPercent, formatNumber } from '../../lib/format';
 import { readParams, num, str, updateURL } from '../../lib/url-state';
 import MentionExemple from './MentionExemple';
 import { resultatExemple, resumeRepli } from '../../lib/libelles-trame';
+import { COVER_DEFAULTS, article, type Partner } from '../../lib/cover-defaults';
 
-type Partner = 'married' | 'cohabiting' | 'none';
 interface Props {
   age?: number; sex?: Sex; area?: Area; partner?: Partner; kids?: boolean; mortgage?: number; debts?: number; funeral?: number;
   income?: number; years?: number; extra?: number; savings?: number; dis?: number; existing?: number; methodHref: string; idPrefix?: string;
+  /** Prefix of the site's own links (the embed passes the full domain). */
+  siteBase?: string;
 }
 const m = (n: number) => formatMoney(Math.round(n), 0);
 const pc = (x: number) => formatPercent(x, x < 0.1 ? 1 : 0);
+const oneIn = (x: number) => (x > 0 ? formatNumber(Math.round(1 / x), 0) : '');
 const PARTNER = [
   { value: 'married', label: 'Married or civil partner' },
   { value: 'cohabiting', label: 'Living together, not married' },
@@ -36,7 +43,8 @@ const SEX = [{ value: 'm', label: 'Male' }, { value: 'f', label: 'Female' }];
 const AREA_OPTS = AREAS.map((a) => ({ value: a, label: AREA_LABEL[a] }));
 
 export default function CoverCalc(p: Props) {
-  const d = { age: 38, sex: 'm' as Sex, area: 'uk' as Area, partner: 'married' as Partner, kids: true, mortgage: 180000, debts: 8000, funeral: 5000, income: 24000, years: 15, extra: 20000, savings: 15000, dis: 0, existing: 0, ...p };
+  const d = { ...COVER_DEFAULTS, ...p };
+  const base = p.siteBase ?? '';
   // `children` is React’s slot prop: Astro hydrates it as an empty slot, so the toggle is called `kids`.
   const [age, setAge] = useState(d.age);
   const [sex, setSex] = useState<Sex>(d.sex);
@@ -108,44 +116,46 @@ export default function CoverCalc(p: Props) {
   const share = () => { try { navigator.clipboard.writeText(window.location.href); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard refused */ } };
   const id = (x: string) => `${p.idPrefix ?? 'cv'}-${x}`;
   const row = (label: string, x: string, strong = false) => (
-    <tr key={label} className={strong ? 'total' : ''}><td className="pr-2 text-navy-700">{label}</td><td className="tabular-nums text-right text-navy-900">{x}</td></tr>
+    <tr key={label} className={strong ? 'total' : ''}><td className="pr-2 text-navy-700">{label}</td><td className="tabular-nums whitespace-nowrap text-right text-navy-900">{x}</td></tr>
   );
-  const bspLabel = r.bsp.rate === 'none' ? 'Bereavement Support Payment' : `Bereavement Support Payment, ${r.bsp.rate} rate`;
+  const bspLabel = 'State bereavement payment to your partner';
+  // "No" to a child at home: the children's lump sums of the example go, unless the reader typed them.
+  const setKids = (v: string) => { const yes = v === '1'; setChildren(yes); if (!touched.extra) setExtra(yes ? d.extra : 0); };
 
   return (
     <div data-chrome className="rechner border border-navy-300 bg-white p-4 sm:p-5">
       <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,26rem)]">
         <form ref={formRef} className="grid content-start gap-4" onSubmit={(e) => e.preventDefault()}>
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-            <NumberField id={id('mortgage')} label="Mortgage left to repay" value={mortgage} onChange={t('mortgage', setMortgage)} unit="£" max={20_000_000} help="Balance today, 0 if you rent" />
-            <NumberField id={id('income')} label="Income your family would need" value={income} onChange={t('income', setIncome)} unit="£" max={5_000_000} help="A year, on top of the partner’s own pay" />
-          </div>
-          <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-            <NumberField id={id('years')} label="For how many years" value={years} onChange={t('years', setYears)} unit="yrs" max={50} help="Often until the youngest child is 18 or 21" />
-            <NumberField id={id('age')} label="Your age" value={age} onChange={t('age', setAge)} unit="yrs" min={16} max={90} help="Sets the chance a policy pays out" />
-          </div>
-          <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
             <SelectField id={id('partner')} label="Partner" value={partner} onChange={t('partner', (v: string) => setPartner(v as Partner))} options={PARTNER} />
-            <Toggle id={id('children')} label="Child Benefit for a child at home" value={children ? '1' : '0'} onChange={t('children', (v: string) => setChildren(v === '1'))} options={[{ value: '1', label: 'Yes' }, { value: '0', label: 'No' }]} />
+            <Toggle id={id('children')} label="Child at home (Child Benefit paid)" value={children ? '1' : '0'} onChange={t('children', setKids)} options={[{ value: '1', label: 'Yes' }, { value: '0', label: 'No' }]} />
           </div>
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-            <NumberField id={id('savings')} label="Savings your family could use" value={savings} onChange={t('savings', setSavings)} unit="£" max={50_000_000} />
-            <NumberField id={id('dis')} label="Death in service from work" value={dis} onChange={t('dis', setDis)} unit="£" max={50_000_000} help="Lump sum, often a multiple of salary" />
+            <NumberField id={id('age')} label="Your age" value={age} onChange={t('age', setAge)} unit="yrs" min={16} max={90} help="Used for the odds that a policy pays out" />
+            <Toggle id={id('sex')} label="Sex" value={sex} onChange={t('sex', (v: string) => setSex(v as Sex))} options={SEX} />
+          </div>
+          <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
+            <NumberField id={id('mortgage')} label="Mortgage left to repay" value={mortgage} onChange={t('mortgage', setMortgage)} unit="£" max={20_000_000} help="Balance today, 0 if you rent" />
+            <NumberField id={id('income')} label="Yearly income your family would lose" value={income} onChange={t('income', setIncome)} unit="£" max={5_000_000} help="What they would be short each year without your pay; 0 if they could manage" />
+          </div>
+          <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
+            <NumberField id={id('years')} label="For how many years" value={years} onChange={t('years', setYears)} unit="yrs" max={50} help="Until the youngest is 18 or 21; with no child, until the mortgage ends" />
+            <NumberField id={id('savings')} label="Savings your family could use" value={savings} onChange={t('savings', setSavings)} unit="£" max={50_000_000} help="Not pensions" />
           </div>
           <details className="border-t border-navy-200 pt-3">
-            <summary className="cursor-pointer text-sm font-semibold text-navy-800">More: debts, funeral, children’s lump sums, cover you have, sex and nation
-              <span data-actuellement className="mt-0.5 block text-xs font-normal text-navy-600">{resumeRepli('en', [{ label: 'Other debts', valeur: m(debts) }, { label: 'Funeral', valeur: m(funeral) }, { label: 'Children’s lump sums', valeur: m(extra) }, { label: 'Cover held', valeur: m(existing) }, { label: 'Sex', valeur: SEX.find((x) => x.value === sex)?.label ?? '' }, { label: 'Nation', valeur: AREA_LABEL[area] }])}</span></summary>
+            <summary className="cursor-pointer text-sm font-semibold text-navy-800">Already counted for you: debts, funeral, children’s lump sums. Tap to change, or to add life cover from your job
+              <span data-actuellement className="mt-0.5 block text-xs font-normal text-navy-600">{resumeRepli('en', [{ label: 'Other debts', valeur: m(debts) }, { label: 'Funeral', valeur: m(funeral) }, { label: 'Children’s lump sums', valeur: m(extra) }, { label: 'Life cover from your job', valeur: m(dis) }, { label: 'Policies you hold', valeur: m(existing) }, { label: 'Nation', valeur: AREA_LABEL[area] }])}</span></summary>
             <div className="mt-3 grid gap-4">
               <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
                 <NumberField id={id('debts')} label="Other debts" value={debts} onChange={t('debts', setDebts)} unit="£" max={10_000_000} help="Loans, cards, car finance" />
                 <NumberField id={id('funeral')} label="Funeral budget" value={funeral} onChange={t('funeral', setFuneral)} unit="£" max={1_000_000} help="Your own figure" />
               </div>
               <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-                <NumberField id={id('extra')} label="Lump sums for the children" value={extra} onChange={t('extra', setExtra)} unit="£" max={10_000_000} help="University, a deposit, childcare" />
-                <NumberField id={id('existing')} label="Life cover you already have" value={existing} onChange={t('existing', setExisting)} unit="£" max={50_000_000} help="Personal policies, not work" />
+                <NumberField id={id('extra')} label="Lump sums for the children" value={extra} onChange={t('extra', setExtra)} unit="£" max={10_000_000} help="University, a deposit, childcare; 0 if none" />
+                <NumberField id={id('dis')} label="Life cover from your job (death in service)" value={dis} onChange={t('dis', setDis)} unit="£" max={50_000_000} help="See your contract or staff handbook, often 2 to 4 times salary; 0 if none or not sure" />
               </div>
               <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-                <Toggle id={id('sex')} label="Sex (ONS tables)" value={sex} onChange={t('sex', (v: string) => setSex(v as Sex))} options={SEX} />
+                <NumberField id={id('existing')} label="Life insurance you already hold" value={existing} onChange={t('existing', setExisting)} unit="£" max={50_000_000} help="Your own policies, not the one from work" />
                 <SelectField id={id('area')} label="Nation" value={area} onChange={t('area', (v: string) => setArea(v as Area))} options={AREA_OPTS} />
               </div>
             </div>
@@ -155,18 +165,19 @@ export default function CoverCalc(p: Props) {
           <MentionExemple lang="en" touched={touched} />
           <p className="text-sm font-medium text-navy-700">Life cover still needed</p>
           <p className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{m(r.need)}</p>
-          <p className="mt-1 text-sm text-navy-800">Over a {term}-year term, a policy on your life pays out in about <strong className="tabular-nums">{pc(odds)}</strong> of cases at today’s death rates for your age. The rest of the time it pays nothing.</p>
+          <p className="mt-1 text-sm text-navy-800">Over {article(term)} {term}-year term, about <strong className="tabular-nums">1 in {oneIn(odds)}</strong> people of your age and sex would die and the policy would pay ({pc(odds)}, today’s death rates). For the others it ends without a claim, which is why term cover costs little at this age.</p>
           <table className="ledger mt-3 w-full text-sm"><tbody>
-            {row('Mortgage, debts and funeral', m(mortgage + debts + funeral))}
-            {row(`Income: ${m(income)} × ${years} years`, m(r.incomeNeed))}
+            {row('Mortgage, other debts and funeral', m(mortgage + debts + funeral))}
+            {row(`Lost income: ${m(income)} × ${years} years`, m(r.incomeNeed))}
             {row('Lump sums for the children', m(extra))}
             {row('Total the family would need', m(r.gross), true)}
             {row(bspLabel, r.state > 0 ? `− ${m(r.state)}` : 'not due')}
-            {row('Savings, death in service, cover held', `− ${m(savings + dis + existing)}`)}
+            {row('Savings and cover you already have', `− ${m(savings + dis + existing)}`)}
             {row('Cover still needed', m(r.need), true)}
           </tbody></table>
-          {r.need > 0 && years > 0 && <p className="mt-2 text-sm text-navy-800">As a family income benefit instead: about <strong className="tabular-nums">{m(r.monthlyEquivalent)}</strong> a month for {term} years.</p>}
-          <p className="mt-2 text-xs text-navy-600">{r.bsp.rate !== 'none' ? `Bereavement Support Payment counted for a claim within ${P.bsp.fullClaimMonths} months: ${m(r.bsp.lump)} then ${P.bsp.months} × ${m(r.bsp.monthly)}, paid to your partner if your own National Insurance record qualifies. ` : partner === 'cohabiting' ? 'An unmarried partner without a child getting Child Benefit gets no Bereavement Support Payment. ' : ''}Life expectancy at {age}: {formatNumber(ex, 1)} years (ONS {LT_PERIOD}). No interest is assumed on the income. Estimate only, not advice.</p>
+          {r.need > 0 && years > 0 && <p className="mt-2 text-sm text-navy-800">Or paid monthly instead of in one lump sum (family income benefit): about <strong className="tabular-nums">{m(r.monthlyEquivalent)}</strong> a month for {term} years.</p>}
+          {r.bsp.rate === 'none' && partner === 'cohabiting' && <p data-non-marie className="mt-2 text-sm font-medium text-navy-900">Not married and no child at home: your partner would get no state bereavement payment. <a href={`${base}/en/life-insurance-unmarried-couples/`} className="text-accent-700 underline underline-offset-2">What unmarried partners can and cannot claim</a></p>}
+          <p className="mt-2 text-xs text-navy-600">{r.bsp.rate !== 'none' ? `State bereavement payment (Bereavement Support Payment, ${r.bsp.rate} rate) counted for a claim within ${P.bsp.fullClaimMonths} months: ${m(r.bsp.lump)} then ${P.bsp.months} × ${m(r.bsp.monthly)}, if your own National Insurance record qualifies. ` : ''}People of {age} live on average another {formatNumber(ex, 1)} years, to about age {formatNumber(Math.round(age + ex), 0)} (ONS {LT_PERIOD}). No interest is assumed on the income. Estimate only, not advice.</p>
         </div>
       </div>
       <div ref={barRef} data-barre-resultat aria-hidden="true" className={`fixed inset-x-0 bottom-0 z-40 border-t border-navy-300 bg-white/95 px-4 py-2 text-sm text-navy-900 shadow-[0_-2px_6px_rgba(0,0,0,0.06)] lg:hidden print:hidden ${barre ? '' : 'hidden'}`}>{exemple ? <><span data-exemple-barre className="mr-1 rounded border border-amber-300 bg-amber-50 px-1 font-semibold text-amber-900">Example:</span>cover needed </> : 'Cover needed: '}<strong className="tabular-nums">{m(r.need)}</strong> · pays out in <strong className="tabular-nums">{pc(odds)}</strong> of cases over {term} years</div>
@@ -175,6 +186,14 @@ export default function CoverCalc(p: Props) {
         <button type="button" onClick={() => window.print()} className="rounded border border-navy-300 px-3 py-1.5 font-medium text-navy-800 hover:bg-navy-50">Print</button>
         <a href={p.methodHref} className="text-accent-700 underline underline-offset-2">How this is calculated</a>
         <span className="text-xs text-navy-600">State rates {P.taxYear}, read on GOV.UK. No quote form and no insurer prices.</span>
+      </div>
+      <div data-ensuite className="mt-4 border-t border-navy-200 pt-3 text-sm text-navy-800">
+        <p className="font-semibold text-navy-900">What to do with this figure</p>
+        <ol className="mt-1 list-decimal space-y-1 pl-5">
+          <li>Note the amount and the length: <strong className="tabular-nums">{m(r.need)}</strong> over <strong className="tabular-nums">{term} years</strong>.</li>
+          <li>Ask an insurer, or a firm on the FCA register, for a level or decreasing term quote for that amount. No one here will call you.</li>
+          <li>Ask for the policy to be written in trust, so the money reaches your family quickly. <a href={`${base}/en/life-insurance-in-trust/`} className="text-accent-700 underline underline-offset-2">Why a trust matters</a></li>
+        </ol>
       </div>
     </div>
   );

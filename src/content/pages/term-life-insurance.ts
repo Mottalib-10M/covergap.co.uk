@@ -1,10 +1,13 @@
 import { definePage } from '../../lib/guide-types';
+import { DEFAULT_AGE } from '../../lib/cover-defaults';
+
+const AGE = DEFAULT_AGE, TERM = 25;
 
 export default definePage({
   id: 'term-life-insurance',
   group: 'life',
   order: 20,
-  tool: { kind: 'mini:term', props: { age: 32, sum: 250000, term: 30, sex: 1 } },
+  tool: { kind: 'mini:term', props: { age: AGE, term: TERM, sex: 0 } },
   related: ['life-insurance-by-age', 'mortgage-life-insurance', 'family-income-benefit', 'whole-of-life-insurance'],
   sources: ['ons_nlt', 'gov_bsp', 'gov_valuing'],
   slug: 'term-life-insurance',
@@ -15,8 +18,8 @@ export default definePage({
   h1: 'Term life insurance: what you are buying, in odds',
   intro: 'A level term policy pays a fixed sum if you die within the term and nothing after it. The calculator shows how often that happens at your age.',
   resume: (h) => {
-    const p = h.odds(32, 30, 'f'), half = h.odds(32, 15, 'f'), m = h.odds(32, 30, 'm');
-    return `Term life insurance covers a set number of years. If the insured person dies within the term, the policy pays the sum assured, usually to whoever is named or to the trustees of a trust; if they are alive at the end, it stops and pays nothing back. A level term policy keeps the same sum for the whole term, unlike decreasing cover, which falls with a repayment mortgage. For a woman of 32 taking ${h.m(250000)} of level cover for 30 years, the ONS life tables for 2022 to 2024 give a ${h.pc(p)} chance of a claim, of which ${h.pc(half)} in the first fifteen years. For a man of the same age it is ${h.pc(m)}. Most term policies therefore end unused, which is what keeps them cheaper than whole of life cover: the insurer only pays in the unlikely case.`;
+    const p = h.odds(AGE, TERM, 'm'), half = h.odds(AGE, TERM / 2, 'm'), f = h.odds(AGE, TERM, 'f');
+    return `Term life insurance covers a set number of years. If the insured person dies within the term, the policy pays the sum assured, usually to whoever is named or to the trustees of a trust; if they are alive at the end, it stops and pays nothing back. A level term policy keeps the same sum for the whole term, unlike decreasing cover, which falls with a repayment mortgage. For a man of ${AGE} taking level cover for ${TERM} years, the ONS life tables for 2022 to 2024 give a ${h.pc(p)} chance of a claim, ${h.pc(half)} in the first half of the term and ${h.pc(p - half)} in the second. For a woman of the same age it is ${h.pc(f)}. The amount of cover does not change these odds, only the price. Most term policies therefore end unused, which is what keeps them cheaper than whole of life cover: the insurer only pays in the unlikely case.`;
   },
   faqs: (h) => [
     { q: 'What happens to term life insurance when the term ends?', a: 'It simply stops. There is no cash value, no refund of premiums and no payout if you are alive on the last day. If you still need cover then, a new policy is priced at your new age and health. That is why the term is usually set to the last mortgage payment or the year the youngest child is expected to finish education, not to a round number.' },

@@ -24,7 +24,15 @@ const ui = t(lang);
 const path = route(page.id, lang);
 const h = helpers(true);
 const faqs = page.faqs(h);
-const parts = page.body(h).split(/<!--tool:([a-z0-9:-]+)(?:\|(\{.*?\}))?-->/);
+// Pages shorter on a phone (brief of 2026-11-09): the first section stays open, each later section without a
+// calculator folds under its own H2 (a <details> whose <summary> is the heading). Nothing is removed: the
+// whole text stays in the HTML.
+const replier = (html: string) => html.split(/(?=<h2[\s>])/).map((sec, i) => {
+  const mm = sec.match(/^(<h2[^>]*>[\s\S]*?<\/h2>)([\s\S]*)$/);
+  if (!mm || i < 2 || sec.includes('<!--tool:')) return sec;
+  return `<details class="repli-section"><summary>${mm[1]}</summary>${mm[2]}</details>\n`;
+}).join('');
+const parts = replier(page.body(h)).split(/<!--tool:([a-z0-9:-]+)(?:\|(\{.*?\}))?-->/);
 const jsonLd = [articleSchema({ title: page.h1, description: page.description, path, lang }), webPageSchema({ name: page.h1, description: page.description, path, lang }), breadcrumbSchema([{ name: ui.breadcrumbHome, path: route('home', lang) }, { name: page.nav, path }])];
 if (page.tool) jsonLd.push(webApplicationSchema({ name: page.h1, description: page.description, path, lang }));
 if (faqs.length) jsonLd.push(faqSchema(faqs, lang));

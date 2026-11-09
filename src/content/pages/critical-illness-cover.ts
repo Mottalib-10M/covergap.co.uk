@@ -18,7 +18,7 @@ export default definePage({
   intro: 'Both policies pay when you are alive but your finances are hit. Enter a lump sum, your outgoings and a monthly benefit to compare them in months.',
   resume: (h) => {
     const r = h.E.lumpVsIncome(LUMP, NEED, IP, 24);
-    return `Critical illness cover pays a single tax-free lump sum if the insured person meets one of the definitions listed in the policy, whether or not they can still work. Income protection pays a monthly benefit only while they cannot work, after a deferred period, until they recover or the claim period ends. They answer different questions. A lump sum of ${h.m(LUMP)} pays ${h.m(NEED)} of monthly outgoings for ${h.num1(r.lumpMonths)} months, or clears part of a mortgage at once. An income protection benefit of ${h.m(IP)} a month over a two-year absence pays ${h.m(r.ipTotal)}, and keeps paying for as long as the claim lasts within the policy term. The lump sum is paid once, so it suits a debt or a one-off cost; the income suits a long absence. This site describes the contracts and the money, not the conditions a policy lists: those are in each insurer’s policy wording.`;
+    return `Critical illness cover pays a single tax-free lump sum if the insured person meets one of the definitions listed in the policy, whether or not they can still work. Income protection pays a monthly benefit only while they cannot work, after a deferred period, until they recover or the claim period ends. They answer different questions. A lump sum of ${h.m(LUMP)} pays ${h.m(NEED)} of monthly outgoings for ${h.num1(r.lumpMonths)} months, or clears part of a mortgage at once. An income protection benefit of ${h.m(IP)} a month, paid for two years once its deferred period has passed, pays ${h.m(r.ipTotal)}, and keeps paying for as long as the claim lasts within the policy term. The lump sum is paid once, so it suits a debt or a one-off cost; the income suits a long absence. This site describes the contracts and the money, not the conditions a policy lists: those are in each insurer’s policy wording.`;
   },
   faqs: (h) => [
     { q: 'Is critical illness cover worth it if I already have income protection?', a: 'It depends on what the money would be for. Income protection replaces part of your pay while you cannot work; it pays nothing if you go back to work, even part-time in some policies. A critical illness lump sum is paid on a valid claim even if you keep working, so some people use it to clear debts or adapt a home. The two can work together.' },
@@ -37,7 +37,7 @@ export default definePage({
 ${h.table(['Lump sum', 'Months of outgoings', 'Years'], rows, `Outgoings of ${h.m(NEED)} a month. Your own figure goes in the calculator.`, ['r', 'r', 'r'])}
 
 <h2>What a monthly benefit adds up to</h2>
-<p>An income benefit of ${h.m(IP)} a month pays in proportion to the length of the absence. The last column is what remains short each month against the same outgoings, before state support.</p>
+<p>An income benefit of ${h.m(IP)} a month pays in proportion to the length of the absence. “Still short” is the total missing over the whole period against the same outgoings, before state support.</p>
 ${h.table(['Absence after the deferred period', 'Income protection paid', 'Still short'], rows2, `Benefit ${h.m(IP)} a month. State support comes on top, see below.`, ['l', 'r', 'r'])}
 
 <h2>The state support alongside either policy</h2>

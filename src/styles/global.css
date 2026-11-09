@@ -93,3 +93,13 @@ h1 { font-weight: 700; } h2 { font-weight: 650; } h3 { font-weight: 600; }
   .clamp-more { display: inline-block; cursor: pointer; margin-top: 0.25rem; font-size: 0.875rem; font-weight: 600; color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
   .clamp-toggle:focus-visible ~ .clamp-more { outline: 2px solid #111827; outline-offset: 3px; }
 }
+
+/* Long sections folded under their own title (brief of 2026-11-09: pages shorter on a phone, nothing removed). */
+details.repli-section { border-top: 1px solid var(--color-navy-200); }
+details.repli-section > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.9rem 0; font-weight: 600; color: var(--color-navy-900); }
+details.repli-section > summary::-webkit-details-marker { display: none; }
+details.repli-section > summary::after { content: "Open \25BE"; flex-shrink: 0; font-size: 0.875rem; font-weight: 600; color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
+details.repli-section[open] > summary::after { content: "Close \25B4"; }
+details.repli-section > summary h2, .prose details.repli-section > summary h2 { margin: 0; padding: 0; border: 0; font-size: 1.25rem; line-height: 1.35; }
+details.repli-section > summary:focus-visible { outline: 2px solid #111827; outline-offset: 3px; }
+.prose details.repli-section + details.repli-section { margin-top: 0; }

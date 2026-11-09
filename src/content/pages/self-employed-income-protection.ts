@@ -1,12 +1,14 @@
 import { definePage } from '../../lib/guide-types';
 
-const AGE = 42, NEED = 2200, SAV = 8000;
+import { DEFAULT_AGE } from '../../lib/cover-defaults';
+
+const AGE = DEFAULT_AGE, NEED = 2200, SAV = 8000;
 
 export default definePage({
   id: 'self-employed-income-protection',
   group: 'income',
   order: 130,
-  tool: { kind: 'mini:selfemp', props: { age: 42, need: 2200, sav: 8000, sup: 0 } },
+  tool: { kind: 'mini:selfemp', props: { age: AGE, need: NEED, sav: SAV, sup: 0 } },
   related: ['income-protection-insurance', 'income-protection-deferred-period', 'critical-illness-cover', 'key-person-insurance'],
   sources: ['gov_esa', 'gov_rates', 'gov_uc', 'ittoia_735'],
   slug: 'self-employed-income-protection',

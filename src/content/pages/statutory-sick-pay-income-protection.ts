@@ -1,41 +1,45 @@
 import { definePage } from '../../lib/guide-types';
 
+// Page centred on the gap SSP leaves and the cover that fills it (audit of 2026-11-09, A4): the SSP rate
+// itself is statutorypay.co.uk's subject, not this site's.
+const WEEKLY = 450, NEED = 2000;
+
 export default definePage({
   id: 'statutory-sick-pay-income-protection',
   group: 'income',
   order: 110,
-  tool: { kind: 'mini:ssp', props: { weekly: 450 } },
+  tool: { kind: 'mini:ssp', props: { weekly: WEEKLY, need: NEED } },
   related: ['income-protection-insurance', 'income-protection-deferred-period', 'self-employed-income-protection', 'death-in-service'],
   sources: ['gov_ssp', 'gov_ssp_2026', 'gov_rates', 'gov_esa'],
   slug: 'statutory-sick-pay-income-protection',
-  nav: 'Statutory Sick Pay 2026/27',
-  card: 'SSP after the April 2026 reform: the weekly amount for your earnings, the 28-week limit and what it means for cover.',
-  title: 'Statutory Sick Pay 2026/27: Rate, 80% Rule and Your Cover',
-  description: 'Statutory Sick Pay for 2026/27: the weekly rate, the 80 % of earnings rule from day one, what 28 weeks of SSP add up to, and why it rarely covers a mortgage.',
-  h1: 'Statutory Sick Pay 2026/27 and what it leaves uncovered',
-  intro: 'Enter your average weekly earnings before tax. The calculator applies the rule in force since the April 2026 reform.',
+  nav: 'The gap sick pay leaves',
+  card: 'What you would be short each month on sick pay alone, against your own outgoings, and the cover that fills the gap.',
+  title: 'Income Protection After Sick Pay 2026/27: Your Monthly Gap',
+  description: 'How much income protection you need on top of sick pay in 2026/27: what you would be short each month against your outgoings, and over the weeks of SSP.',
+  h1: 'The gap sick pay leaves each month, and the cover that fills it',
+  intro: 'Enter your weekly earnings and your monthly outgoings. The calculator shows what you would be short each month if only the legal minimum sick pay came in.',
   resume: (h) => {
-    const S = h.P.ssp;
-    const low = h.E.sspWeekly(140), mid = h.E.sspWeekly(450);
-    return `Statutory Sick Pay is the minimum an employer must pay an employee who is too ill to work. For the ${h.P.taxYear} tax year it is ${h.m2(S.weekly)} a week or ${h.pc(S.earningsShare)} of the employee’s average weekly earnings, whichever is lower, paid from the first day off sick for up to ${S.maxWeeks} weeks. Both rules came in on ${h.D.ssp}: before that date, SSP started only after unpaid waiting days and the lowest earners could not get it at all. Someone earning ${h.m(140)} a week before tax now gets ${h.m2(low)}; anyone earning ${h.m(450)} or more gets the full ${h.m2(mid)}. Over the full ${S.maxWeeks} weeks that is ${h.m(mid * S.maxWeeks)} at most, before tax and National Insurance. For most households that covers a fraction of the rent or mortgage and nothing else, which is the gap income protection and company sick pay schemes exist to fill.`;
+    const S = h.P.ssp, W = h.P.weeksPerYear, M = h.P.monthsPerYear;
+    const sm = (h.E.sspWeekly(WEEKLY) * W) / M, short = Math.max(0, NEED - sm);
+    return `Most employees who fall ill get only the legal minimum, Statutory Sick Pay (SSP), once any company sick pay in their contract has run out. For ${h.P.taxYear} that is at most ${h.m2(S.weekly)} a week, about ${h.m(sm)} a month, for up to ${S.maxWeeks} weeks. Set against ordinary outgoings, the gap is large. Someone earning ${h.m(WEEKLY)} a week, about ${h.m((WEEKLY * W) / M)} a month, with ${h.m(NEED)} a month of rent or mortgage, bills and food, would be ${h.m(short)} short every month on SSP alone, and ${h.m(short * M / W * S.maxWeeks)} short over the ${S.maxWeeks} weeks. That gap is what income protection insurance is bought to fill: a monthly benefit, chosen by the buyer, that starts after a waiting time called the deferred period. Savings, a partner’s pay or a generous employer scheme can fill part of it instead. The calculator shows the gap for your own earnings and outgoings.`;
   },
   faqs: (h) => [
-    { q: 'How much is Statutory Sick Pay a month in 2026/27?', a: `The full weekly rate of ${h.m2(h.P.ssp.weekly)} works out at about ${h.m((h.P.ssp.weekly * h.P.weeksPerYear) / h.P.monthsPerYear)} a month, before income tax and National Insurance, which are deducted like wages. A lower earner gets ${h.pc(h.P.ssp.earningsShare)} of average weekly earnings instead, so less. Your employer may pay more under its own sick pay scheme, but never less than SSP.` },
-    { q: 'Can I get SSP from two jobs at the same time?', a: 'Yes. GOV.UK says that if you have more than one job you may get SSP from each employer, as long as you qualify in each one. Each employer works out the amount on the earnings it pays you, so two part-time jobs can bring two payments of up to the flat rate. Income protection policies usually count total earnings from all jobs.' },
-    { q: `What do I get after ${h.P.ssp.maxWeeks} weeks of Statutory Sick Pay?`, a: `Nothing more from the employer under SSP rules. Your employer must send form SSP1 so that you can apply for New Style ESA or Universal Credit. New Style ESA starts at ${h.m2(h.P.esa.assessment25)} a week if you are 25 or over and your National Insurance record qualifies. The timeline on the income protection page follows each phase for two years.` },
-    { q: 'Do I need a fit note to get Statutory Sick Pay?', a: `For an absence of more than ${h.P.ssp.fitNoteAfterDays} days in a row, including days you would not have worked, your employer can ask for a fit note. GPs, hospital doctors, registered nurses, occupational therapists, pharmacists and physiotherapists can issue one, on paper or digitally. For shorter absences, the employer can accept your own word or other evidence it agrees to.` },
+    { q: 'How much income protection do I need on top of sick pay?', a: `Start from your monthly outgoings, not your salary. Take off what would still come in: sick pay of about ${h.m((h.P.ssp.weekly * h.P.weeksPerYear) / h.P.monthsPerYear)} a month at most, a partner’s pay you could rely on, and any rent or interest you receive. What is left is the monthly benefit to aim for. Insurers cap the benefit at a share of earnings, so the quote shows how close you can get.` },
+    { q: 'Does income protection pay while I am still getting sick pay?', a: 'It can. A policy pays once its deferred period has passed, whatever your employer is paying, unless the policy says otherwise. That is why many people choose a deferred period that starts when company sick pay stops: paying for cover during months the employer already pays in full adds to the premium and protects little. Check the policy wording for any reduction while you receive sick pay.' },
+    { q: `What happens to my income after ${h.P.ssp.maxWeeks} weeks off sick?`, a: `Sick pay from the employer stops. Your employer must give you form SSP1 so that you can apply for New Style ESA (Employment and Support Allowance) or Universal Credit. New Style ESA starts at ${h.m2(h.P.esa.assessment25)} a week if you are 25 or over and your National Insurance record qualifies. The timeline on the income protection page follows each stage for two years.` },
+    { q: 'Is sick pay enough to cover a mortgage?', a: 'Rarely. At the flat weekly rate, a month of Statutory Sick Pay is less than the monthly repayment on many mortgages, before any bills or food. Mortgage payment protection, income protection or savings fill that gap. If you expect to fall behind, telling the lender early leaves more options open than waiting for a missed payment.' },
   ],
   body: (h) => {
     const S = h.P.ssp;
     const ws = [100, 125, 150, 175, 200, 300, 450, 700];
-    const rows = ws.map((w) => { const s = h.E.sspWeekly(w); return [h.m(w), h.m2(s), h.m((s * h.P.weeksPerYear) / h.P.monthsPerYear), h.m(s * S.maxWeeks)]; });
+    const rows = ws.map((w) => { const s = h.E.sspWeekly(w); return [h.m(w), h.m2(s), h.pc(s / w), h.m((w - s) * S.maxWeeks)]; });
     const cut = S.weekly / S.earningsShare;
     return `
-<h2>SSP at different earnings</h2>
-<p>The ${h.pc(S.earningsShare)} rule only bites below average weekly earnings of ${h.m2(cut)}: above that, everyone gets the same flat rate, whatever their salary. So for a full-time employee on an ordinary wage, SSP is a fixed amount that does not move with pay, and the higher the salary, the larger the drop.</p>
-${h.table(['Average weekly earnings', 'SSP a week', 'About a month', `Total over ${S.maxWeeks} weeks`], rows, `${h.P.taxYear} rate, read on ${h.src('gov_ssp', 'GOV.UK')} and in the ${h.src('gov_rates', 'DWP rates table')}. Before tax and National Insurance.`, ['r', 'r', 'r', 'r'])}
+<h2>How much of your pay sick pay replaces</h2>
+<p>The ${h.pc(S.earningsShare)} rule only applies below average weekly earnings of ${h.m2(cut)}: above that, everyone gets the same flat amount, whatever their salary. So the higher the pay, the smaller the share that sick pay replaces, and the larger the gap a policy has to fill.</p>
+${h.table(['Average weekly earnings', 'Sick pay a week', 'Share of pay replaced', `Pay lost over ${S.maxWeeks} weeks`], rows, `${h.P.taxYear} rate, read on ${h.src('gov_ssp', 'GOV.UK')} and in the ${h.src('gov_rates', 'DWP rates table')}. Before tax and National Insurance.`, ['r', 'r', 'r', 'r'])}
 
-<h2>What the reform changed, and what it did not</h2>
+<h2>The April 2026 reform: more for short absences, little for long ones</h2>
 <p>${h.src('gov_ssp_2026', 'GOV.UK’s guidance for absences that span the change')} sets out the transition: waiting days no longer apply from ${h.D.ssp}, and an employee who earned too little to qualify before that date becomes entitled. What stayed the same is the length. SSP still runs for ${S.maxWeeks} weeks at most, linked periods of sickness less than ${S.linkGapWeeks} weeks apart still count as one, and a series of linked periods ends entitlement after three years. For a short absence the reform pays more; for a long one it changes almost nothing.</p>
 
 <h2>Reading your employer’s scheme against it</h2>

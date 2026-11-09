@@ -34,7 +34,7 @@ export default definePage({
     const rows2 = estates.map((e) => { const r = h.E.ihtOnPayout({ ...CASE, estate: e, home: Math.min(e, CASE.home) }); return [h.m(e), h.m(r.thresholdInEstate), h.m(r.extra)]; });
     return `
 <h2>Tax added by different payouts</h2>
-<p>The estate is ${h.m(CASE.estate)} without the policy, including a home of ${h.m(CASE.home)} left to the children, and no spouse inherits. The second column is the tax on the estate alone, which is what the family pays with the policy in trust; the third is the tax with the payout added.</p>
+<p>The estate is ${h.m(CASE.estate)} without the policy, including a home of ${h.m(CASE.home)} left to the children, and no spouse inherits. “Tax, policy in trust” is the tax on the estate alone, which is what the family pays with the policy in trust; “Tax, paid to the estate” is the tax with the payout added.</p>
 ${h.table(['Payout', 'Tax, policy in trust', 'Tax, paid to the estate', 'Extra tax', 'Family keeps of the payout'], rows, `Inheritance tax at ${h.pc(I.rate)} above the thresholds, ${h.P.taxYear}. No lifetime gifts. Read on ${h.src('gov_iht', 'GOV.UK')}.`, ['r', 'r', 'r', 'r', 'r'])}
 
 <h2>When the payout pushes the estate past the taper</h2>

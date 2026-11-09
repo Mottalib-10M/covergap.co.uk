@@ -31,7 +31,7 @@ export default definePage({
     const bsp = h.E.bsp('married', true);
     return `
 <h2>Combined against separate, for different critical illness sums</h2>
-<p>The table keeps ${h.m(LIFE)} of life cover and varies the critical illness sum. A combined policy pays the critical illness sum on a living claim and keeps only the rest as life cover; separate policies keep the whole life cover. The last two columns show the total the family receives if both kinds of claim happen within the term.</p>
+<p>The table keeps ${h.m(LIFE)} of life cover and varies the critical illness sum. A combined policy pays the critical illness sum on a living claim and keeps only the rest as life cover; separate policies keep the whole life cover. The two “Total if both claims” lines show what the family receives if both kinds of claim happen within the term.</p>
 ${h.table(['Critical illness sum', 'Paid on a critical illness claim', 'Life cover left (combined)', 'Total if both claims, combined', 'Total if both claims, separate'], rows, `Life cover ${h.m(LIFE)} in each case. Sums are your own choice.`, ['r', 'r', 'r', 'r', 'r'])}
 
 <h2>Why the order of claims matters</h2>

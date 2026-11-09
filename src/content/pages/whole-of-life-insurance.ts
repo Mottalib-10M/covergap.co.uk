@@ -6,7 +6,7 @@ export default definePage({
   id: 'whole-of-life-insurance',
   group: 'later',
   order: 210,
-  tool: { kind: 'mini:whole', props: { age: 45, premium: 60, sum: 50000, sex: 0 } },
+  tool: { kind: 'mini:whole', props: { age: AGE, premium: PREM, sum: SUM, sex: 0 } },
   related: ['over-50s-life-insurance', 'life-insurance-in-trust', 'term-life-insurance', 'life-insurance-over-60s'],
   sources: ['ons_nlt', 'gov_iht', 'gov_trusts_iht'],
   slug: 'whole-of-life-insurance',

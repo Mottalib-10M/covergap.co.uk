@@ -33,7 +33,7 @@ export default definePage({
     const bsp = h.E.bsp('married', true);
     return `
 <h2>What is paid against different funeral costs</h2>
-<p>The fees are paid in full in this example; other costs are capped. The two right-hand columns show the lower cap of ${h.m(F.withPlan)} when the person had a prepaid funeral plan, which assumes the plan pays for the rest.</p>
+<p>The fees are paid in full in this example; other costs are capped. The two “with a plan” lines show the lower cap of ${h.m(F.withPlan)} when the person had a prepaid funeral plan, which assumes the plan pays for the rest.</p>
 ${h.table(['Other funeral costs', 'Most paid, no plan', 'Left to pay, no plan', 'Most paid, with a plan', 'Not covered by the payment, with a plan'], rows, `Burial or cremation fees ${h.m(FEES)}. Caps from ${h.src('gov_funeral', 'GOV.UK')}. Any money from the estate is taken back.`, ['r', 'r', 'r', 'r', 'r'])}
 
 <h2>The estate comes first</h2>

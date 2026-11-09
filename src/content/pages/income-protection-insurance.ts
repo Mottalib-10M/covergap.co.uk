@@ -14,8 +14,8 @@ export default definePage({
   card: 'Your income week by week through company sick pay, SSP and New Style ESA, and how much income protection would add.',
   title: 'Income Protection Insurance 2026/27: Your Sick Pay Gap',
   description: 'Income protection insurance in 2026/27: what company sick pay, SSP and New Style ESA pay week by week for two years, and the gap a policy would have to fill.',
-  h1: 'Income protection: the gap after sick pay and ESA',
-  intro: 'Enter your pay, your company sick pay and your monthly outgoings. The timeline follows the state rates for 2026/27 and shows what is left to cover.',
+  h1: 'Income protection: what you would be short if illness stopped your pay',
+  intro: 'Income protection is insurance that pays you a monthly income while illness or injury keeps you off work. Enter your pay and outgoings to see the gap it would have to fill, after sick pay and state benefits for 2026/27.',
   resume: (h) => {
     const g = h.E.sickGap(CASE);
     const withIp = h.E.sickGap({ ...CASE, ipMonthly: 1500, deferredWeeks: 13 });
@@ -36,7 +36,7 @@ export default definePage({
     return `
 <h2>The timeline the calculator follows</h2>
 <p>The table sets out the case loaded above, phase by phase. Weeks are counted from the first day off. Company pay is treated as never falling below Statutory Sick Pay while SSP is due, which is how employers normally pay it: SSP is part of the company payment, not on top of it. When SSP ends at week ${h.P.ssp.maxWeeks}, the calculator assumes a claim for ${h.src('gov_esa', 'New Style ESA')} straight away, paid at the assessment rate for ${h.P.esa.assessmentWeeks} weeks and then, in the work-related activity group, for up to ${h.P.esa.wragDays} days in all.</p>
-${h.table(['Phase', 'Weeks', 'A week', 'A month'], rows, `Employee on ${h.m(CASE.monthlyPay)} a month, ${CASE.fullWeeks} weeks of full company sick pay, aged ${CASE.age}. Amounts before tax, DWP rates ${h.P.taxYear}.`, ['l', 'l', 'r', 'r'])}
+${h.table(['Phase', 'Weeks', 'A week', 'A month'], rows, `Employee on ${h.m(CASE.monthlyPay)} a month, ${CASE.fullWeeks} weeks of full company sick pay, 25 or over (the only age that changes ESA). Amounts before tax, DWP rates ${h.P.taxYear}.`, ['l', 'l', 'r', 'r'])}
 <p>The last line is the one people rarely see written down. Once New Style ESA in the work-related activity group runs out, there is no more contribution-based income at all; what follows depends on Universal Credit, which looks at a partner’s earnings and at savings above ${h.m(h.P.uc.capitalLower)}. For someone placed in the support group after the assessment, ESA continues at ${h.m2(h.P.esa.support)} a week with no end date. On the same pay and outgoings, that changes the two-year shortfall to ${h.m(sup.shortfall)}.</p>
 
 <h2>What changed in April 2026</h2>

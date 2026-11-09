@@ -4,7 +4,7 @@ export default definePage({
   id: 'life-insurance-by-age',
   group: 'life',
   order: 10,
-  tool: { kind: 'mini:odds', props: { age: 35, term: 25, sex: 0, area: 0 } },
+  tool: { kind: 'mini:odds', props: { age: 40, term: 25, sex: 0, area: 0 } },
   related: ['home', 'term-life-insurance', 'life-insurance-over-60s', 'joint-life-insurance'],
   sources: ['ons_nlt', 'ons_nlt_nations', 'ogl'],
   slug: 'life-insurance-by-age',
@@ -25,12 +25,14 @@ export default definePage({
   ],
   body: (h) => {
     const ages = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65];
-    const rows = ages.map((a) => [`${a}`, h.pc(h.odds(a, 10, 'm')), h.pc(h.odds(a, 10, 'f')), h.pc(h.odds(a, 20, 'm')), h.pc(h.odds(a, 20, 'f')), h.num1(h.E.lifeExpectancy(a, 'm')), h.num1(h.E.lifeExpectancy(a, 'f'))]);
+    const rows = ages.map((a) => [`${a}`, h.pc(h.odds(a, 10, 'm')), h.pc(h.odds(a, 10, 'f')), h.pc(h.odds(a, 20, 'm')), h.pc(h.odds(a, 20, 'f')), left(a, 'm'), left(a, 'f')]);
+    // Life expectancy in the site's one wording: years left, then the age reached (naive testers, 2026-11-09).
+    function left(a: number, x: 'm' | 'f') { const e = h.E.lifeExpectancy(a, x); return `${h.num1(e)} (to ${h.num(Math.round(a + e))})`; }
     const ratio = h.odds(45, 20, 'm') / h.odds(35, 20, 'm');
     return `
 <h2>The odds at each age</h2>
 <p>The table chains the yearly death rates of the ${h.src('ons_nlt', 'ONS national life tables')} over ten and twenty years. A rate of a few in a thousand in a single year becomes several percent over two decades, and the curve bends upwards: from 35 to 45, the twenty-year figure for men grows ${h.num1(ratio)} times. That bend is what you see in quotes as you get older, before any question about health or smoking is asked.</p>
-${h.table(['Age at start', '10 years, men', '10 years, women', '20 years, men', '20 years, women', 'Life expectancy, men', 'Women'], rows, 'United Kingdom, ONS national life tables 2022 to 2024, period rates for the whole population.', ['l', 'r', 'r', 'r', 'r', 'r', 'r'])}
+${h.table(['Age at start', '10 years, men', '10 years, women', '20 years, men', '20 years, women', 'Years left on average, men', 'Years left, women'], rows, 'United Kingdom, ONS national life tables 2022 to 2024, period rates for the whole population.', ['l', 'r', 'r', 'r', 'r', 'r', 'r'])}
 
 <h2>Why this is not a price list</h2>
 <p>Insurers start from tables like these, then replace them with their own experience of the people they cover, who are on average healthier than the whole population. They add their expenses, the commission of whoever sold the policy, a margin for profit and a loading for anything in your answers that raises the risk. None of those adjustments is published in a form that may be reused, and the averages printed on broker pages give no method. So the figures above tell you how the risk moves, not what anyone will charge.</p>

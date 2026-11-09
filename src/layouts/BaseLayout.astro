@@ -138,13 +138,13 @@ const crumbAside = Astro.slots.has('crumb-aside') ? (await Astro.slots.render('c
         </div>
       </div>
       <div id="mobile-menu" class="hidden max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-navy-200 bg-white px-4 pb-4 lg:hidden">
+        {direct.map((l) => <div class="border-b border-navy-100 py-2"><a href={l.href} class="block py-2 text-sm font-semibold leading-snug text-accent-700 [overflow-wrap:anywhere]">{l.label}</a></div>)}
         {cats.map((cat) => (
           <div class="border-b border-navy-100 py-2">
             <button class="mobile-section-toggle flex w-full items-center justify-between gap-3 py-2 text-left text-sm font-semibold text-navy-900" aria-expanded="false"><span class="min-w-0 [overflow-wrap:anywhere]">{cat.label}</span><svg class="mobile-chevron h-4 w-4 shrink-0 text-navy-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button>
             <div class="mobile-section-content hidden space-y-0.5 pb-2 pl-2">{cat.links.map((l) => <a href={l.href} class="block rounded py-1.5 pl-2 text-sm leading-snug text-navy-600 [overflow-wrap:anywhere] hover:text-accent-600">{l.label}</a>)}</div>
           </div>
         ))}
-        {direct.map((l) => <div class="border-b border-navy-100 py-2"><a href={l.href} class="block py-2 text-sm font-semibold leading-snug text-navy-900 [overflow-wrap:anywhere]">{l.label}</a></div>)}
       </div>
     </nav>
     </header>
@@ -161,15 +161,21 @@ const crumbAside = Astro.slots.has('crumb-aside') ? (await Astro.slots.render('c
     </main>
     <footer class="mt-16 border-t border-navy-200 bg-navy-50">
       <div class="mx-auto max-w-6xl px-4 py-12">
-        <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {footerCols.map((col) => (<div><h2 class="mb-3 text-sm font-semibold text-navy-900">{col.label}</h2><ul class="space-y-2 text-sm text-navy-600">{col.links.map((l) => <li><a href={l.href} class="hover:text-navy-900">{l.label}</a></li>)}</ul></div>))}
-        </div>
+        {/* Footer plan folded on phones (brief of 2026-11-09: thirty links in two columns made every page longer);
+             opened on wider screens by the script below. The links stay in the HTML. */}
+        <details id="plan-du-site" class="plan-du-site">
+          <summary class="cursor-pointer text-sm font-semibold text-navy-900 underline underline-offset-2 md:hidden">All pages of the site</summary>
+          <div class="mt-4 grid grid-cols-2 gap-8 md:mt-0 md:grid-cols-4">
+            {footerCols.map((col) => (<div><h2 class="mb-3 text-sm font-semibold text-navy-900">{col.label}</h2><ul class="space-y-2 text-sm text-navy-600">{col.links.map((l) => <li><a href={l.href} class="hover:text-navy-900">{l.label}</a></li>)}</ul></div>))}
+          </div>
+        </details>
+        <script is:inline set:html={`(function(){var d=document.getElementById('plan-du-site');if(d&&window.matchMedia('(min-width: 768px)').matches)d.open=true;})();`} />
         {popular.length > 0 && (<div class="mt-8 border-t border-navy-200 pt-6"><h2 class="mb-2 text-sm font-semibold text-navy-900">{ui.footerPopular}</h2><p class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-navy-600">{popular.map((p) => <a href={p.href} class="hover:text-navy-900">{p.label}</a>)}</p></div>)}
         <div class="mt-8 border-t border-navy-200 pt-8">
           <div class="flex flex-col items-center gap-2 text-center text-sm text-navy-500">
-            <p><span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-0.5 text-xs font-medium text-green-700"><span class="inline-block h-1.5 w-1.5 rounded-full bg-green-500" aria-hidden="true"></span>{ui.footerValidated} · {YEAR}</span></p>
+            <p><span class="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-0.5 text-xs font-medium text-green-700"><span class="inline-block h-1.5 w-1.5 rounded-full bg-green-500" aria-hidden="true"></span>{ui.footerValidated}</span></p>
             <p>{ui.footerBrowser}</p>
-            <p>{ui.asOf} {YEAR}, {ui.lastUpdated} <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, LANG_TAGS[lang])}</time></p>
+            <p>{ui.asOf}, {ui.lastUpdated} <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, LANG_TAGS[lang])}</time></p>
             <p>&copy; {new Date().getFullYear()} {SITE_NAMES[lang]}. {ui.footerDisclaimer}</p>
             <p>{ui.ogl} <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="nofollow noopener" class="underline hover:text-navy-900">Open Government Licence v3.0</a>.</p>
             {(GA4_ID || CLARITY_ID) && CONSENT_MODE !== 'none' && <p><button type="button" data-consent-manage class="underline hover:text-navy-900">{consentStrings(lang).manage}</button></p>}

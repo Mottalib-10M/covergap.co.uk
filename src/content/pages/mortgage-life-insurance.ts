@@ -1,12 +1,14 @@
 import { definePage } from '../../lib/guide-types';
+import { COVER_DEFAULTS, DEFAULT_AGE } from '../../lib/cover-defaults';
 
-const LOAN = 200000, RATE = 0.045, YEARS = 25;
+// Same loan as the main calculator's example, same age as every calculator of the site.
+const LOAN = COVER_DEFAULTS.mortgage, RATE = 0.045, YEARS = 25, AGE = DEFAULT_AGE;
 
 export default definePage({
   id: 'mortgage-life-insurance',
   group: 'life',
   order: 30,
-  tool: { kind: 'mini:mortgage', props: { loan: 200000, rate: 4.5, years: 25, at: 10 } },
+  tool: { kind: 'mini:mortgage', props: { loan: COVER_DEFAULTS.mortgage, rate: 4.5, years: 25, at: 10 } },
   related: ['term-life-insurance', 'joint-life-insurance', 'home', 'life-insurance-in-trust'],
   sources: ['ons_nlt', 'gov_valuing', 'gov_trusts'],
   slug: 'mortgage-life-insurance',
@@ -18,8 +20,8 @@ export default definePage({
   intro: 'Enter the loan, the rate and the years left. The calculator shows what would still be owed at any point, which is what the cover has to clear.',
   resume: (h) => {
     const b10 = h.E.mortgageBalance(LOAN, RATE, YEARS, 10), b20 = h.E.mortgageBalance(LOAN, RATE, YEARS, 20);
-    const p = h.odds(35, YEARS, 'm');
-    return `Mortgage life insurance is term cover set up to repay a home loan if a borrower dies before it is paid off. Most is sold as decreasing term cover, whose sum assured falls each year roughly in line with a capital repayment mortgage. On a ${h.m(LOAN)} loan at ${h.pc(RATE)} over ${YEARS} years, the balance is still ${h.m(b10)} after ten years and ${h.m(b20)} after twenty, because early payments go mostly on interest. A decreasing policy follows that curve, so the insurer’s exposure shrinks and the premium is lower than for level cover of the full loan. For a man of 35, the ONS life tables put the chance of a claim within those ${YEARS} years at ${h.pc(p)}. Lenders often ask for cover but cannot insist that you buy theirs: any insurer’s policy that clears the balance does the job.`;
+    const p = h.odds(AGE, YEARS, 'm');
+    return `Mortgage life insurance is term cover set up to repay a home loan if a borrower dies before it is paid off. Most is sold as decreasing term cover, whose sum assured falls each year roughly in line with a capital repayment mortgage. On a ${h.m(LOAN)} loan at ${h.pc(RATE)} over ${YEARS} years, the balance is still ${h.m(b10)} after ten years and ${h.m(b20)} after twenty, because early payments go mostly on interest. A decreasing policy follows that curve, so the insurer’s exposure shrinks and the premium is lower than for level cover of the full loan. For a man of ${AGE}, the ONS life tables put the chance of a claim within those ${YEARS} years at ${h.pc(p)}. Lenders often ask for cover but cannot insist that you buy theirs: any insurer’s policy that clears the balance does the job.`;
   },
   faqs: (h) => [
     { q: 'Do I legally need life insurance to get a mortgage?', a: 'No. It is not a legal requirement in the UK, and lenders usually do not make it a condition of a residential loan, though some ask about it. It matters most when someone else depends on the home: a partner who could not keep up the payments alone, or children. A single borrower with no dependants may decide that the house sale would clear the debt.' },
@@ -28,7 +30,8 @@ export default definePage({
   ],
   body: (h) => {
     const ys = [0, 5, 10, 15, 20, 25];
-    const rows = ys.map((t) => { const b = h.E.mortgageBalance(LOAN, RATE, YEARS, t); return [`Year ${t}`, h.m(b), h.pc(b / LOAN), h.m(LOAN - b)]; });
+    // Year 25 is the last payment: the policy ends with the loan, so it pays nothing above the debt then.
+    const rows = ys.map((t) => { const b = h.E.mortgageBalance(LOAN, RATE, YEARS, t); const fin = t >= YEARS; return [fin ? `Year ${t}, last payment` : `Year ${t}`, h.m(b), fin ? 'nothing' : h.pc(b / LOAN), fin ? 'cover ends' : h.m(LOAN - b)]; });
     const pay = h.E.mortgagePayment(LOAN, RATE, YEARS);
     const hi = h.E.mortgageBalance(LOAN, 0.06, YEARS, 12), lo = h.E.mortgageBalance(LOAN, RATE, YEARS, 12);
     return `

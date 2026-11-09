@@ -29,15 +29,16 @@ export default definePage({
   body: (h) => {
     const ages = [50, 55, 60, 65, 70, 75, 80];
     const rows = ages.map((a) => { const m = h.E.over50({ age: a, sex: 'm', premium: PREM, sum: SUM, stopAge: STOP }); const f = h.E.over50({ age: a, sex: 'f', premium: PREM, sum: SUM, stopAge: STOP }); const ok = Number.isFinite(m.breakEvenAge); return [h.num(a), ok ? h.num1(m.breakEvenAge) : `not reached by ${STOP}`, ok ? h.pc(m.aliveAtBreakEven) : 'n/a', ok ? h.pc(f.aliveAtBreakEven) : 'n/a', h.num1(a + m.expectancy), h.num1(a + f.expectancy)]; });
-    const prems = [15, 20, 30, 40, 60];
+    // The calculator's own premium (PREM) is one of the lines, so the reader finds the example again.
+    const prems = [...new Set([15, 20, PREM, 30, 40, 60])].sort((x, y) => x - y);
     const rows2 = prems.map((p) => { const r = h.E.over50({ age: AGE, sex: 'm', premium: p, sum: SUM, stopAge: STOP }); return [h.m(p), Number.isFinite(r.breakEvenAge) ? h.num1(r.breakEvenAge) : 'not reached', h.pc(r.aliveAtBreakEven), h.m(r.paidToExpectancy)]; });
     return `
 <h2>Break-even by starting age, same premium and payout</h2>
-<p>The table keeps ${h.m(PREM)} a month and a fixed ${h.m(SUM)} and changes only the starting age. Real plans charge more the older you start, so for an older applicant, type the premium you were actually quoted. The life expectancy columns are the average age at death for someone already that age, from the ${h.src('ons_nlt', 'ONS tables')}.</p>
+<p>The table keeps ${h.m(PREM)} a month and a fixed ${h.m(SUM)} and changes only the starting age. Real plans charge more the older you start, so for an older applicant, type the premium you were actually quoted. The “average age at death” lines give the age that someone already that age reaches on average (their age plus the years they have left), from the ${h.src('ons_nlt', 'ONS tables')}.</p>
 ${h.table(['Starting age', 'Premiums reach the payout at', 'Man alive then', 'Woman alive then', 'Average age at death, man', 'Average age at death, woman'], rows, `Premium ${h.m(PREM)} a month, payout ${h.m(SUM)}, premiums stop at ${STOP}. ONS 2022-2024, United Kingdom.`, ['r', 'r', 'r', 'r', 'r', 'r'])}
 
 <h2>The premium you were quoted changes everything</h2>
-<p>Break-even is the payout divided by the monthly premium, so a higher premium brings it closer. The last column is what a man starting at ${AGE} would have paid in by the average age at death for his age.</p>
+<p>Break-even is the payout divided by the monthly premium, so a higher premium brings it closer. The “paid in by the average age at death” line is what a man starting at ${AGE} would have paid in by the age a man of ${AGE} reaches on average.</p>
 ${h.table(['Premium a month', 'Premiums reach the payout at', 'Chance of living past it', 'Paid in by the average age at death'], rows2, `Man aged ${AGE}, payout ${h.m(SUM)}, premiums stop at ${STOP}.`, ['r', 'r', 'r', 'r'])}
 
 <h2>What these plans are for</h2>
