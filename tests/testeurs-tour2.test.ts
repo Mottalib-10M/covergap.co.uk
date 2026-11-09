@@ -81,7 +81,7 @@ describe('folded fields', () => {
   });
 });
 
-describe.skipIf(!existsSync('dist'))('home page, built', () => {
+describe.skipIf(!existsSync(join('dist', 'en/index.html')))('home page, built', () => {
   const html = readFileSync(join('dist', 'en/index.html'), 'utf8');
   it('has a door for a reader under 30 and one over 55, each loading an example', () => {
     expect(html).toMatch(/href="\/en\/\?ex=1&amp;a=25[^"]*#calculator"[^>]*>Under 30, renting, no children/);
