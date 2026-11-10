@@ -11,10 +11,10 @@ export default definePage({
   sources: ['fca_funeral', 'fca_ps2115', 'fca_register', 'gov_funeral'],
   slug: 'funeral-plans',
   nav: 'Funeral plans',
-  card: 'What FCA regulation changed, how to check a provider, and what instalments cost against paying in one go.',
+  card: 'What changed when the Financial Conduct Authority began regulating plans, how to check a provider, and what instalments cost against paying in one go.',
   title: 'Funeral Plans 2026: FCA Checks and the Cost of Instalments',
   description: 'Funeral plans in 2026: why the provider must be FCA-authorised, what the Ombudsman and FSCS cover, and how much more instalments cost than paying in one go.',
-  h1: 'Funeral plans: the FCA checks and the price of paying monthly',
+  h1: 'Funeral plans: what the regulator checks, and the price of paying monthly',
   intro: 'A prepaid funeral plan buys a funeral at today’s price. Type the single price and the instalment offer from a quote to see the difference.',
   resume: (h) => {
     const r = h.E.planInstalments(PRICE, MONTHLY, MONTHS);
@@ -24,7 +24,6 @@ export default definePage({
     { q: 'How do I check a funeral plan provider is FCA authorised?', a: 'Use the FCA Firm Checker: search for the provider by name, select the funeral plan service and check that it can enter into funeral plan contracts and administer claims. A funeral director may sell a plan as an appointed representative of another firm, its principal, which is the provider to check. Your paperwork names the provider.' },
     { q: 'What happens to my funeral plan if the provider stops trading?', a: 'If the provider was authorised, you have access to the Financial Services Compensation Scheme, and the FCA rules on trusts and insurance arrangements are designed to protect customers when a firm fails. If you cannot find your provider on the Firm Checker, the FCA says it has either transferred its plans to an authorised provider or wound down, and points to a tracing service.' },
     { q: 'Is a funeral plan better than an over 50s plan?', a: 'They do different things. A funeral plan pays for a set list of funeral services, whatever they cost when they are needed. An over 50s plan pays a fixed sum of cash, which may or may not cover a funeral by then. Comparing the price of each, the list of what is included and what happens if payments stop is the fair test.' },
-    { q: 'Does a funeral plan affect the Funeral Expenses Payment?', a: `Yes. If the person who died had a prepaid funeral plan, the Funeral Expenses Payment can pay only up to ${h.m(h.P.funeral.withPlan)} for items the plan does not cover, instead of up to ${h.m(h.P.funeral.otherExpenses)} for other funeral costs. The payment is also reduced by money from the estate.` },
   ],
   body: (h) => {
     const counts = [12, 24, 36, 60, 120];
@@ -37,12 +36,11 @@ ${h.table(['Instalments', 'Total paid', 'Extra over the single price', 'Extra in
 <h2>What changed with FCA regulation</h2>
 <p>The FCA began regulating prepaid funeral plans on ${h.date(h.P.funeral.fcaFrom)}. Its ${h.src('fca_ps2115', 'policy statement PS21/15')} set rules on how providers hold the money through trust and insurance arrangements, on what happens if a provider fails, and on access to the Financial Services Compensation Scheme. Before that date, plans were not regulated and customers had no access to the Ombudsman or to the compensation scheme. The ${h.src('fca_funeral', 'FCA’s consumer page')} explains how to check a provider and what to do if yours no longer appears.</p>
 
-<h2>Checking a provider</h2>
-<p>Search the provider’s name on the ${h.src('fca_register', 'FCA register')}, select the funeral plan service, and look under what the firm can do for two permissions: entering into a funeral plan contract, and administering claims on an existing plan. Where the firm that sold the plan is an appointed representative, the provider is its principal, and that is the firm to look up.</p>
-
 <h2>Reading the plan</h2>
 <p>Plans differ in what they include. Check whether the price covers the third-party costs, such as the cremation or burial fee and the doctor’s certificate, or only the funeral director’s services; whether a burial plot is included; what happens if instalments stop before the end; whether the plan can be cancelled and what is refunded; and whether the funeral director can be changed or the plan moved if you move house. The plan only fixes the services it lists. For people on certain benefits, the ${h.a('funeral-expenses-payment', 'Funeral Expenses Payment')} can help with costs a plan does not cover, within a lower limit, as shown on ${h.src('gov_funeral', 'GOV.UK')}.</p>
-<h2>Who the plan is with</h2>
+
+<p>Search the provider’s name on the ${h.src('fca_register', 'FCA register')}, select the funeral plan service, and look under what the firm can do for two permissions: entering into a funeral plan contract, and administering claims on an existing plan. Where the firm that sold the plan is an appointed representative, the provider is its principal, and that is the firm to look up.</p>
+
 <p>A funeral plan may be sold by one firm and provided by another, and delivered by a funeral director who is neither. The FCA points out that a funeral director who is an appointed representative may sell a plan from its principal, even if it will carry out the funeral. Your paperwork names the provider; if it does not, the firm that sold the plan can tell you.</p>
 `;
   },

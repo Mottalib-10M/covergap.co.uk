@@ -139,10 +139,12 @@ const crumbAside = Astro.slots.has('crumb-aside') ? (await Astro.slots.render('c
       </div>
       <div id="mobile-menu" class="hidden max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-navy-200 bg-white px-4 pb-4 lg:hidden">
         {direct.map((l) => <div class="border-b border-navy-100 py-2"><a href={l.href} class="block py-2 text-sm font-semibold leading-snug text-accent-700 [overflow-wrap:anywhere]">{l.label}</a></div>)}
+        {/* Testers of 2026-11-10: “Sick pay and income protection” stayed shut while other groups were open; every
+             group of the phone menu now starts open, the same for all. */}
         {cats.map((cat) => (
           <div class="border-b border-navy-100 py-2">
-            <button class="mobile-section-toggle flex w-full items-center justify-between gap-3 py-2 text-left text-sm font-semibold text-navy-900" aria-expanded="false"><span class="min-w-0 [overflow-wrap:anywhere]">{cat.label}</span><svg class="mobile-chevron h-4 w-4 shrink-0 text-navy-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button>
-            <div class="mobile-section-content hidden space-y-0.5 pb-2 pl-2">{cat.links.map((l) => <a href={l.href} class="block rounded py-1.5 pl-2 text-sm leading-snug text-navy-600 [overflow-wrap:anywhere] hover:text-accent-600">{l.label}</a>)}</div>
+            <button class="mobile-section-toggle flex w-full items-center justify-between gap-3 py-2 text-left text-sm font-semibold text-navy-900" aria-expanded="true"><span class="min-w-0 [overflow-wrap:anywhere]">{cat.label}</span><svg class="mobile-chevron h-4 w-4 shrink-0 rotate-180 text-navy-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button>
+            <div class="mobile-section-content space-y-0.5 pb-2 pl-2">{cat.links.map((l) => <a href={l.href} class="block rounded py-1.5 pl-2 text-sm leading-snug text-navy-600 [overflow-wrap:anywhere] hover:text-accent-600">{l.label}</a>)}</div>
           </div>
         ))}
       </div>

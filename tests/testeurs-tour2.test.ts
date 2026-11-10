@@ -49,16 +49,19 @@ describe('critical illness: one length per line', () => {
   });
 });
 
-describe('income protection: how much a month', () => {
-  it('the big figure is outgoings minus the state benefit after sick pay, to the nearest £10', () => {
-    const out = run('gap', { pay: 2800, need: 2000, full: 4, half: 0, u25: 0, ip: 0, def: 13 });
+describe('income protection: how much a month (tour of 2026-11-10: the two amounts named side by side)', () => {
+  it('the big figure covers the outgoings once the state pays nothing; the smaller one names its weeks', () => {
+    const out = run('gap', { pay: 2800, need: 2000, full: 4, half: 0, age: 40, ip: 0, def: 13 });
     const esa = (E.esaWeekly(40, 'wrag') * P.weeksPerYear) / P.monthsPerYear;
-    expect(out.head[0]).toBe('Income protection to look for, a month');
-    expect(money(out.head[1])).toBe(Math.round((2000 - esa) / 10) * 10);
+    expect(out.head[0]).toMatch(/^Once all sick pay and state benefit have stopped: income protection to ask for, a month$/);
+    expect(money(out.head[1])).toBe(2000);
+    const row = out.rows.find(([l]) => /^Enough only while the state benefit, New Style ESA, is paid \(weeks \d+ to \d+\)$/.test(l));
+    expect(row).toBeTruthy();
+    expect(money(row![1])).toBe(Math.round((2000 - esa) / 10) * 10);
   });
-  it('under 25 the two-year income is lower (ESA assessment rate)', () => {
-    const inc = (u25: number) => money(run('gap', { pay: 2800, need: 2000, full: 4, half: 0, u25, ip: 0, def: 13 }).rows.find(([l]) => /^Income received/.test(l))![1]);
-    expect(inc(1)).toBeLessThan(inc(0));
+  it('under 25 the two-year shortfall is larger (ESA assessment rate)', () => {
+    const short = (age: number) => money(run('gap', { pay: 2800, need: 2000, full: 4, half: 0, age, ip: 0, def: 13 }).rows.find(([l]) => /^Short over 2 years/.test(l))![1]);
+    expect(short(24)).toBeGreaterThan(short(40));
   });
 });
 
@@ -68,10 +71,10 @@ describe('a chance in words agrees with its percentage', () => {
       expect(inWords(p)).toBe(`about ${pct(p).replace('%', '')} people in 100`);
     }
   });
-  it('the by-age calculator no longer shows “1 in 9” next to “12%”', () => {
-    const out = run('odds', { age: 40, term: 25, sex: 0, area: 0 });
+  it('the term calculator never shows “1 in 9” next to “12%”', () => {
+    const out = run('term', { age: 40, term: 25, sex: 0 });
     expect(out.head[1]).toBe('12%');
-    expect(out.rows.find(([l]) => l === 'In other words')![1]).toBe('about 12 people in 100');
+    expect(out.note).toContain('about 12 people in 100');
   });
 });
 
@@ -89,7 +92,7 @@ describe.skipIf(!existsSync(join('dist', 'en/index.html')))('home page, built', 
     expect(html).toMatch(/href="\/en\/\?ex=1&amp;a=61[^"]*#calculator"[^>]*>Over 55, children grown up/);
   });
   it('the sick pay gap section is open, not folded', () => {
-    const i = html.indexOf('Death is the smaller risk');
+    const i = html.indexOf('Being off sick is the likelier risk');
     expect(i).toBeGreaterThan(0);
     expect(html.slice(Math.max(0, i - 200), i)).not.toMatch(/<summary/);
   });

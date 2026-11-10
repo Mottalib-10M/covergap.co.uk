@@ -17,12 +17,16 @@
  * example, not the reader's figures); the fold's title gives the total it adds; plain words for level and
  * decreasing cover, the FCA register and a trust; a reader with no partner and no child is pointed to the
  * sick pay gap; retirement and pensions in the field help.
+ * Brief of 2026-11-10 (five rules): on a phone, a line above the fields announces the answer; a line under the
+ * big figure says what it assumes; the hard field (income the family would lose) has a simple rule and a
+ * “not sure?” way out; the odds are said as the policy paying out, not as people dying; the children's lump
+ * sums hide when there is no child at home.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import NumberField from '../ui/NumberField';
 import SelectField from '../ui/SelectField';
 import Toggle from '../ui/Toggle';
-import { coverNeed, payoutChance, lifeExpectancy, AREAS, AREA_LABEL, type Area, type Sex } from '../../lib/engine/protection';
+import { coverNeed, payoutChance, AREAS, AREA_LABEL, type Area, type Sex } from '../../lib/engine/protection';
 import { P } from '../../lib/engine/params';
 import { formatMoney, formatPercent, formatNumber } from '../../lib/format';
 import { readParams, num, str, updateURL } from '../../lib/url-state';
@@ -118,7 +122,6 @@ export default function CoverCalc(p: Props) {
   const r = useMemo(() => coverNeed({ mortgage, debts, funeral, income, years, extra, savings, deathInService: dis, existing, partner, children, countBsp: true }), [mortgage, debts, funeral, income, years, extra, savings, dis, existing, partner, children]);
   const term = Math.max(1, Math.round(years));
   const odds = useMemo(() => payoutChance(age, term, sex, area), [age, term, sex, area]);
-  const ex = lifeExpectancy(age, sex, area);
   const share = () => { try { navigator.clipboard.writeText(window.location.href); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* clipboard refused */ } };
   const id = (x: string) => `${p.idPrefix ?? 'cv'}-${x}`;
   const row = (label: string, x: string, strong = false) => (
@@ -135,21 +138,22 @@ export default function CoverCalc(p: Props) {
     <div data-chrome className="rechner border border-navy-300 bg-white p-4 sm:p-5">
       <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,26rem)]">
         <form ref={formRef} className="grid content-start gap-4" onSubmit={(e) => e.preventDefault()}>
-          {exemple && <p data-consigne-exemple className="text-sm font-semibold text-navy-900">Start by changing these to match you: the figures below are an example.</p>}
+          <p data-annonce className="text-sm text-navy-800 lg:hidden"><strong className="tabular-nums text-base text-navy-900">{m(r.need)}</strong> of life cover over {term} years{exemple ? ' for the example: change the figures below to see yours' : ''}. Details under the fields ↓</p>
+          {exemple && <p data-consigne-exemple className="text-sm font-semibold text-navy-900 max-lg:hidden">Start by changing these to match you: the figures below are an example.</p>}
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
             <SelectField id={id('partner')} label="Partner" value={partner} onChange={t('partner', (v: string) => setPartner(v as Partner))} options={PARTNER} />
-            <Toggle id={id('children')} label="Child at home (Child Benefit paid)" value={children ? '1' : '0'} onChange={t('children', setKids)} options={[{ value: '1', label: 'Yes' }, { value: '0', label: 'No' }]} />
+            <Toggle id={id('children')} label="Child at home (you get Child Benefit)" value={children ? '1' : '0'} onChange={t('children', setKids)} options={[{ value: '1', label: 'Yes' }, { value: '0', label: 'No' }]} />
           </div>
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-            <NumberField id={id('age')} label="Your age" value={age} onChange={t('age', setAge)} unit="yrs" min={16} max={90} help="Used for the odds that a policy pays out" />
+            <NumberField id={id('age')} label="Your age" value={age} onChange={t('age', setAge)} unit="years" min={16} max={90} help="Used for the odds that a policy pays out" />
             <Toggle id={id('sex')} label="Sex" value={sex} onChange={t('sex', (v: string) => setSex(v as Sex))} options={SEX} />
           </div>
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
             <NumberField id={id('mortgage')} label="Mortgage left to repay" value={mortgage} onChange={t('mortgage', setMortgage)} unit="£" max={20_000_000} help="Balance today, 0 if you rent" />
-            <NumberField id={id('income')} label="Yearly income your family would lose" value={income} onChange={t('income', setIncome)} unit="£" max={5_000_000} help="Your take-home pay they would miss each year, after tax, less what they would no longer spend on you; 0 if they could manage" />
+            <NumberField id={id('income')} label="Money your family would lose each year" value={income} onChange={t('income', setIncome)} unit="£" max={5_000_000} help="Your take-home pay for a year, less what they would no longer spend on you. Not sure? Enter your take-home pay: it errs on the safe side. 0 if they could manage" />
           </div>
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-            <NumberField id={id('years')} label="For how many years" value={years} onChange={t('years', setYears)} unit="yrs" max={50} help="Until the youngest is 18 or 21; with no child, until the mortgage ends; close to retirement, until your State Pension starts" />
+            <NumberField id={id('years')} label="For how many years" value={years} onChange={t('years', setYears)} unit="years" max={50} help="Until your youngest is 18, or 21 if they study. No child: until the mortgage ends. Close to retirement: until your State Pension starts" />
             <NumberField id={id('savings')} label="Savings your family could use" value={savings} onChange={t('savings', setSavings)} unit="£" max={50_000_000} help="Cash and investments; leave out pension pots" />
           </div>
           <details className="border-t border-navy-200 pt-3">
@@ -161,7 +165,7 @@ export default function CoverCalc(p: Props) {
                 <NumberField id={id('funeral')} label="Funeral budget" value={funeral} onChange={t('funeral', setFuneral)} unit="£" max={1_000_000} help="Your own figure" />
               </div>
               <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
-                <NumberField id={id('extra')} label="Lump sums for the children" value={extra} onChange={t('extra', setExtra)} unit="£" max={10_000_000} help="University, a deposit, childcare; 0 if none" />
+                {children && <NumberField id={id('extra')} label="Lump sums for the children" value={extra} onChange={t('extra', setExtra)} unit="£" max={10_000_000} help="University, a deposit, childcare; 0 if none" />}
                 <NumberField id={id('dis')} label="Life cover from your job (death in service)" value={dis} onChange={t('dis', setDis)} unit="£" max={50_000_000} help="See your contract or staff handbook, often 2 to 4 times salary; 0 if none or not sure" />
               </div>
               <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
@@ -175,7 +179,8 @@ export default function CoverCalc(p: Props) {
           <MentionExemple lang="en" touched={touched} quoi={quoi} />
           <p className="text-sm font-medium text-navy-700">Life cover still needed</p>
           <p className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{m(r.need)}</p>
-          <p className="mt-1 text-sm text-navy-800">Over {article(term)} {term}-year term, <strong className="tabular-nums">{inWords(odds)}</strong> of your age and sex would die and the policy would pay ({pc(odds)}, today’s death rates). For the others it ends without a claim, which is why term cover costs little at this age.</p>
+          <p data-suppose className="mt-1 text-sm text-navy-800">Cover lasting {term} years, from the amounts listed below.</p>
+          <p className="mt-1 text-sm text-navy-800">Over {article(term)} {term}-year term, such a policy pays out for <strong className="tabular-nums">{inWords(odds)}</strong> of your age and sex ({pc(odds)}, today’s death rates). For the others it ends without a claim, which is why term cover costs little at this age.</p>
           <table className="ledger mt-3 w-full text-sm"><tbody>
             {row('Mortgage, other debts and funeral', m(mortgage + debts + funeral))}
             {row(`Lost income: ${m(income)} × ${years} years`, m(r.incomeNeed))}
@@ -188,7 +193,7 @@ export default function CoverCalc(p: Props) {
           {r.need > 0 && years > 0 && <p className="mt-2 text-sm text-navy-800">Or paid as a monthly income instead of one lump sum (a policy called family income benefit): about <strong className="tabular-nums">{m(r.monthlyEquivalent)}</strong> a month for {term} years.</p>}
           {r.bsp.rate === 'none' && partner === 'cohabiting' && <p data-non-marie className="mt-2 text-sm font-medium text-navy-900">Not married and no child at home: your partner would get no state bereavement payment. <a href={`${base}/en/life-insurance-unmarried-couples/`} className="text-accent-700 underline underline-offset-2">What unmarried partners can and cannot claim</a></p>}
           {partner === 'none' && !children && <p data-sans-charge className="mt-2 text-sm font-medium text-navy-900">No partner and no child at home: here life cover mostly pays debts and a funeral. Being off sick for months is the likelier risk at working age. <a href={`${base}/en/income-protection-insurance/`} className="text-accent-700 underline underline-offset-2">How much income protection you would need</a></p>}
-          <p className="mt-2 text-xs text-navy-600">{r.bsp.rate !== 'none' ? `State bereavement payment (Bereavement Support Payment, ${r.bsp.rate} rate) counted for a claim within ${P.bsp.fullClaimMonths} months: ${m(r.bsp.lump)} then ${P.bsp.months} × ${m(r.bsp.monthly)}, if your own National Insurance record qualifies. ` : ''}People of {age} live on average another {formatNumber(ex, 1)} years, to about age {formatNumber(Math.round(age + ex), 0)} (official UK death statistics, ONS {LT_PERIOD}). No interest is assumed on the income. Estimate only, not advice.</p>
+          <p className="mt-2 text-xs text-navy-600">{r.bsp.rate !== 'none' ? `State bereavement payment (Bereavement Support Payment, ${r.bsp.rate} rate) counted for a claim within ${P.bsp.fullClaimMonths} months: ${m(r.bsp.lump)} then ${P.bsp.months} × ${m(r.bsp.monthly)}, if your own National Insurance record qualifies. ` : ''}Odds from official UK death statistics (ONS, the Office for National Statistics, {LT_PERIOD}). No interest is assumed on the income. Estimate only, not advice.</p>
         </div>
       </div>
       <div ref={barRef} data-barre-resultat aria-hidden="true" className={`fixed inset-x-0 bottom-0 z-40 border-t border-navy-300 bg-white/95 px-4 py-2 text-sm text-navy-900 shadow-[0_-2px_6px_rgba(0,0,0,0.06)] lg:hidden print:hidden ${barre ? '' : 'hidden'}`}>{exemple ? <><span data-exemple-barre className="mr-1 rounded border border-amber-300 bg-amber-50 px-1 font-semibold text-amber-900">Example:</span>cover needed </> : 'Cover needed: '}<strong className="tabular-nums">{m(r.need)}</strong> · pays out in <strong className="tabular-nums">{pc(odds)}</strong> of cases over {term} years</div>

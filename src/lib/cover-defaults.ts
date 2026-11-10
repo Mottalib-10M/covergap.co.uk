@@ -11,6 +11,10 @@ export const COVER_DEFAULTS = {
   age: 40, sex: 'm' as Sex, area: 'uk' as Area, partner: 'married' as Partner, kids: true,
   mortgage: 180000, debts: 8000, funeral: 5000, income: 24000, years: 15, extra: 20000, savings: 15000, dis: 0, existing: 0,
 };
+/** The sick pay example, the same on every page that asks for pay and outgoings (brief of 2026-11-10, rule 1:
+ *  one figure per case): an employee on £2,800 a month before tax, £2,000 of outgoings, 4 weeks of full
+ *  company sick pay. */
+export const SICK_DEFAULTS = { pay: 2800, need: 2000, full: 4, half: 0 };
 /** Default age of the calculators that ask for one (same field, same value on every page). */
 export const DEFAULT_AGE = COVER_DEFAULTS.age;
 

@@ -21,7 +21,7 @@ export default definePage({
     return `Family income benefit is a form of term life insurance that replaces income rather than paying a lump sum. If the insured person dies during the term, the family receives a set amount each month from the claim until the term ends. A policy paying ${h.m(MONTHLY)} a month over ${TERM} years pays ${h.m(y1)} if the claim comes in the first year, ${h.m(y10)} if it comes after ten years and ${h.m(y19)} in the last year. Because the insurer’s total exposure falls every month, the premium is usually lower than for level cover of the same starting total. It matches the shape of what a family loses when an earner dies: a salary paid month by month until the children are grown. Many policies let the income rise each year with inflation, at a higher premium.`;
   },
   faqs: (h) => [
-    { q: 'What happens to family income benefit if nobody dies during the term?', a: `Nothing is paid. Like any term policy, it ends on its last day with no refund and no cash value. That is the normal outcome: for a man of 36 over ${TERM} years, the ONS life tables give a ${h.pc(h.odds(36, TERM, 'm'))} chance of a claim, so in most cases the premiums buy only the certainty that the family would have been covered.` },
+    { q: 'What happens to family income benefit if nobody dies during the term?', a: `Nothing is paid. Like any term policy, it ends on its last day with no refund and no cash value. That is the normal outcome: for a man of 36 over ${TERM} years, the official UK death statistics (ONS life tables) give a ${h.pc(h.odds(36, TERM, 'm'))} chance of a claim, so in most cases the premiums buy only the certainty that the family would have been covered.` },
     { q: 'Can the family take the monthly payments as one lump sum instead?', a: 'Some insurers allow the remaining payments to be converted into a single sum, usually at a discount for paying early, and some do not. It is worth checking before buying, because a lump sum can clear a mortgage at once while monthly payments cannot. The policy wording says whether the option exists and how the sum is worked out.' },
     { q: 'How much monthly income should family income benefit pay?', a: `One way to set it is the monthly spending the household would lose, less what continues: the surviving partner’s own pay, Child Benefit, and the ${h.P.bsp.months} months of Bereavement Support Payment if it is due. The life cover calculator turns a yearly income need into a monthly figure over the same term.` },
   ],
@@ -39,16 +39,14 @@ ${h.table(['Claim in', 'Total paid to the family', 'Payments run for'], rows, `$
 <h2>Family income benefit against a lump sum policy</h2>
 <p>A level term policy of ${h.m(lumpTotal)} would pay that full sum whenever the claim happens. In the last years of the term it pays far more than the family needs, and the insurer charges for that. Family income benefit pays only what the remaining years require. The trade-off is flexibility: a lump sum can clear a mortgage, fund a move or be invested, while a monthly income cannot do any of those without a conversion option. Many families combine the two: decreasing cover for the mortgage and family income benefit for living costs.</p>
 
-<h2>How likely a claim is</h2>
-<p>For a man of 36 over ${TERM} years, the ${h.src('ons_nlt', 'ONS life tables')} give a ${h.pc(p)} chance of dying within the term. The policy is a small regular cost against that probability. The odds at other ages are on the ${h.a('life-insurance-by-age', 'life insurance by age')} page.</p>
-
-<h2>What the state adds in the first months</h2>
-<p>A married partner with a child for whom Child Benefit is paid may receive ${h.src('gov_bsp', 'Bereavement Support Payment')} of ${h.m(bsp.lump)} at once and ${h.m(bsp.monthly)} a month for ${h.P.bsp.months} months. It overlaps the start of a family income benefit claim and then stops, so a monthly benefit chosen against long-term spending is rarely changed by it.</p>
-
-<h2>Points to read in the policy</h2>
-<p>Whether the monthly benefit is level or increases each year, and by what index; whether payments continue to the end of the term or for a fixed number of years; whether the family can take the rest as a lump sum; and whether the policy can be written in trust, which keeps the payments outside probate. Income protection, which pays when the insured person is alive but cannot work, is a separate policy: its benefits are free of income tax under ${h.src('ittoia_735', 'section 735 of ITTOIA 2005')} when you pay the premiums yourself.</p>
 <h2>Choosing the monthly figure</h2>
 <p>The usual starting point is the take-home income the family would lose, less what would carry on: a partner’s own earnings, any survivor’s pension, and in the first ${h.P.bsp.months} months the Bereavement Support Payment where it is due. Childcare often rises after a death, because the surviving parent may need to work longer hours, so some households add it rather than subtract it. Because the benefit is a fixed monthly sum, a policy that rises each year keeps more of its value over a long term, at a higher premium. The calculator above shows what a claim would pay in total at any year of the term.</p>
+
+<p>How likely is a claim? For a man of 36 over ${TERM} years, the official UK death statistics (${h.src('ons_nlt', 'ONS life tables')}) give a ${h.pc(p)} chance that the policy pays out. The policy is a small regular cost against that probability. The odds at other ages are on the ${h.a('life-insurance-by-age', 'life insurance by age')} page.</p>
+
+<p>A married partner with a child for whom Child Benefit is paid may receive ${h.src('gov_bsp', 'Bereavement Support Payment')} of ${h.m(bsp.lump)} at once and ${h.m(bsp.monthly)} a month for ${h.P.bsp.months} months. It overlaps the start of a family income benefit claim and then stops, so a monthly benefit chosen against long-term spending is rarely changed by it.</p>
+
+
 `;
   },
 });

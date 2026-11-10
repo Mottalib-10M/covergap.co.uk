@@ -10,13 +10,19 @@
  *   shared link, already the reader's, no mention;
  * - `title`: two calculators stacked on one page each get their own title; `idPrefix` keeps ids unique;
  * - `avance` fields sit in a fold whose title shows the current value of each ("Now: …").
+ *
+ * Brief of 2026-11-10 (five rules): doors by profile as buttons just under the form (above, they pushed the
+ * first field off the first screen, check-premier-ecran) (`spec.portes`, each loads
+ * another example, still marked as one); on a phone a line under the title announces the answer before the
+ * fields; a line under the big figure says what it assumes and over which period (`out.sub`); a field that
+ * does not apply to the case on screen is hidden (`input.si`).
  */
 import { useMemo, useState } from 'react';
 import NumberField from '../ui/NumberField';
 import SelectField from '../ui/SelectField';
 import { getSpec } from '../../lib/mini-specs';
 import MentionExemple from './MentionExemple';
-import { libellesTrame, resumeRepli } from '../../lib/libelles-trame';
+import { libellesTrame, resumeRepli, resultatExemple as resultatExempleMini } from '../../lib/libelles-trame';
 import { formatNumber } from '../../lib/format';
 import type { MiniInput } from '../../lib/mini-types';
 
@@ -32,13 +38,17 @@ export default function MiniSim({ kind, lang = 'en', href, title, defaults = {},
   const champ = (i: MiniInput) => (i.options
     ? <SelectField key={i.id} id={fid(i.id)} label={i.label} value={String(v[i.id])} onChange={(x) => set(i.id)(Number(x))} options={i.options} help={i.help} />
     : <NumberField key={i.id} id={fid(i.id)} label={i.label} value={v[i.id]} onChange={set(i.id)} unit={i.unit} max={i.max} decimals={i.decimals} help={i.help} />);
-  const avances = spec.inputs.filter((i) => i.avance);
+  const visible = (i: MiniInput) => !i.si || i.si(v);
+  const avances = spec.inputs.filter((i) => i.avance && visible(i));
+  const porte = (vals: Record<string, number>) => { setV((o) => ({ ...o, ...vals })); setTouched({}); };
+  const porteActive = (vals: Record<string, number>) => Object.entries(vals).every(([k, x]) => v[k] === x);
   return (
     <div data-chrome data-mini={kind} className={`not-prose rechner ${primary ? '' : 'my-8'} border border-navy-300 bg-white p-4 sm:p-5`}>
       <p className="font-serif text-lg font-semibold text-navy-900">{title ?? spec.title}</p>
+      {primary && <p data-annonce className="mt-1 text-sm text-navy-800 sm:hidden"><strong className="tabular-nums text-base text-navy-900">{out.head[1]}</strong> · {out.head[0].replace(/:? *$/, '')}{resultatExempleMini(touched) ? ' (example)' : ''}. Details under the fields ↓</p>}
       <div className="mt-3 grid gap-5 sm:grid-cols-2">
         <form className="grid content-start gap-3" onSubmit={(e) => e.preventDefault()} {...(primary ? {} : { 'data-simulateur-secondaire': '' })}>
-          {spec.inputs.filter((i) => !i.avance).map(champ)}
+          {spec.inputs.filter((i) => !i.avance && visible(i)).map(champ)}
           {avances.length > 0 && (
             <details data-repli className="border-t border-navy-200 pt-3">
               <summary className="cursor-pointer text-sm font-semibold text-navy-800">{libellesTrame(lang).plusDeReglages}
@@ -49,14 +59,21 @@ export default function MiniSim({ kind, lang = 'en', href, title, defaults = {},
         </form>
         <div aria-live="polite" {...(primary ? { 'data-resultat': '' } : {})} className="self-start border-l-4 border-accent-500 bg-accent-50 p-4">
           <MentionExemple lang={lang} touched={touched} quoi={spec.exemple ? spec.exemple(v) : spec.inputs.filter((i) => !i.avance).map((i) => `${i.label.toLowerCase()} ${valeurAffichee(i, v[i.id])}`).join(', ')} />
-          <p className="text-sm font-medium text-navy-700">{out.head[0]}</p>
+          <p className="text-sm font-semibold text-navy-900">{out.head[0]}</p>
           <p className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{out.head[1]}</p>
+          {out.sub && <p data-suppose className="mt-1 text-sm text-navy-800">{out.sub}</p>}
           <table className="ledger mt-3 w-full text-sm"><tbody>
             {out.rows.map(([l, x]) => <tr key={l}><td className="pr-3 text-navy-700">{l}</td><td className="tabular-nums text-right text-navy-900">{x}</td></tr>)}
           </tbody></table>
           {out.note && <p className="mt-2 text-xs text-navy-600">{out.note}</p>}
         </div>
       </div>
+      {spec.portes && spec.portes.length > 0 && (
+        <div data-portes className="mt-4 border-t border-navy-200 pt-3">
+          <p className="text-sm font-semibold text-navy-900">Not your case? Tap the closest to load that example:</p>
+          <div className="mt-1 flex flex-wrap gap-2">{spec.portes.map((p) => <button key={p.label} type="button" onClick={() => porte(p.v)} aria-pressed={porteActive(p.v)} className={`min-h-11 rounded-full border px-3 py-1.5 text-sm font-medium ${porteActive(p.v) ? 'border-accent-600 bg-accent-600 text-white' : 'border-accent-600 bg-white text-accent-800 hover:bg-accent-50'}`}>{p.label}</button>)}</div>
+        </div>
+      )}
       {href && spec.cta && <a href={href} className="mt-4 inline-block text-sm font-medium text-accent-700 underline underline-offset-2 hover:text-accent-900">{spec.cta}</a>}
     </div>
   );

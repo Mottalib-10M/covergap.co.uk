@@ -12,7 +12,7 @@ export const YEAR = 2026;
 export const SITE_FOUNDED = '2026';
 export const LAST_UPDATED = '2026-11-07';
 export const AUTHOR_NAME = 'Radif Partners';
-export const AUTHOR_ROLE: Record<string, string> = {"en": "Independent publisher of UK protection calculators built on state benefit rates and ONS life tables"};
+export const AUTHOR_ROLE: Record<string, string> = {"en": "Independent publisher of UK protection calculators built on state benefit rates and official UK death statistics"};
 export const AUTHOR_DESC: Record<string, string> = {"en": "Radif Partners publishes Cover Gap, a set of calculators that set life cover, income protection and funeral plans against what the state already pays in 2026/27: Statutory Sick Pay after the April 2026 reform, New Style ESA, Bereavement Support Payment and the Funeral Expenses Payment, read on GOV.UK. The chance that a term policy pays out comes from the ONS national life tables for 2022 to 2024. The site shows no insurance prices, asks for no contact details and is paid by no insurer or broker."};
 /** Sujets sur lesquels l'editeur est competent (schema.org knowsAbout). Ce sont les
  *  themes reellement traites par le site, pas une liste de mots-cles : un sujet

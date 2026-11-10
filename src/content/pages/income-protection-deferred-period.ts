@@ -1,16 +1,19 @@
 import { definePage } from '../../lib/guide-types';
 
-const CASE = { monthlyPay: 3200, monthlyNeed: 2300, fullWeeks: 13, halfWeeks: 13, age: 40, employee: true, savings: 6000 };
+import { DEFAULT_AGE, SICK_DEFAULTS as SD } from '../../lib/cover-defaults';
+// Pay and outgoings: the site's one sick pay example (brief of 2026-11-10, rule 1); this page's own point is a
+// generous scheme of full pay, then half pay.
+const CASE = { monthlyPay: SD.pay, monthlyNeed: SD.need, fullWeeks: 13, halfWeeks: 13, age: DEFAULT_AGE, employee: true, savings: 6000 };
 
 export default definePage({
   id: 'income-protection-deferred-period',
   group: 'income',
   order: 120,
-  tool: { kind: 'mini:deferred', props: { pay: 3200, full: 13, half: 13, need: 2300, sav: 6000 } },
+  tool: { kind: 'mini:deferred', props: { pay: SD.pay, full: 13, half: 13, need: SD.need, sav: 6000 } },
   related: ['income-protection-insurance', 'statutory-sick-pay-income-protection', 'self-employed-income-protection', 'critical-illness-cover'],
   sources: ['gov_ssp', 'gov_esa', 'gov_rates'],
   slug: 'income-protection-deferred-period',
-  nav: 'Deferred period',
+  nav: 'Waiting time (deferred period)',
   card: 'Where your company sick pay and savings run out, and which deferred period would start paying at that point.',
   title: 'Income Protection Deferred Period 2026: Match Your Sick Pay',
   description: 'Income protection deferred period for 2026: find the week your company sick pay and savings run out, and set the policy to start paying then, not before.',
@@ -33,8 +36,8 @@ export default definePage({
     const opt = options.map((d) => { const g = h.E.sickGap({ ...CASE, ipMonthly: 1600, deferredWeeks: d }); return [`${d} weeks`, h.m(g.shortfall), g.savingsGoneWeek === null ? 'not in two years' : `week ${h.num(g.savingsGoneWeek + 1)}`]; });
     return `
 <h2>The phases of this employee’s income</h2>
-<p>Company sick pay comes first, at full and then half pay, with ${h.src('gov_ssp', 'Statutory Sick Pay')} included in it. Once company pay ends, ${h.src('gov_esa', 'New Style ESA')} is assumed to follow at the assessment rate, if the National Insurance record qualifies. The last column is the monthly shortfall against outgoings in each phase.</p>
-${h.table(['Phase', 'Weeks', 'A month', 'Short each month'], rows, `Pay ${h.m(CASE.monthlyPay)} a month, ${CASE.fullWeeks} weeks full and ${CASE.halfWeeks} weeks half pay, outgoings ${h.m(CASE.monthlyNeed)}. DWP rates ${h.P.taxYear}, before tax.`, ['l', 'l', 'r', 'r'])}
+<p>Company sick pay comes first, at full and then half pay, with ${h.src('gov_ssp', 'Statutory Sick Pay')} included in it. Once company pay ends, ${h.src('gov_esa', 'New Style ESA')} (Employment and Support Allowance, the state benefit for people too ill to work) is assumed to follow at the assessment rate, if the National Insurance record qualifies. The last column is the monthly shortfall against outgoings in each phase.</p>
+${h.table(['Phase', 'Weeks', 'A month', 'Short each month'], rows, `Pay ${h.m(CASE.monthlyPay)} a month, ${CASE.fullWeeks} weeks full and ${CASE.halfWeeks} weeks half pay, outgoings ${h.m(CASE.monthlyNeed)}. government rates ${h.P.taxYear}, before tax.`, ['l', 'l', 'r', 'r'])}
 
 <h2>Four income protection deferred periods compared</h2>
 <p>The next table adds a policy of ${h.m(1600)} a month with each of four common deferred periods and shows the two-year shortfall that remains and the week the savings would run out. A four-week period duplicates months the employer already pays; fifty-two weeks leaves the half-pay and ESA months to savings that do not stretch that far.</p>
@@ -43,9 +46,8 @@ ${h.table(['Deferred period', 'Shortfall left over two years', 'Savings run out'
 <h2>How people usually decide</h2>
 <p>Three dates set the choice: the end of full company pay, the end of all company pay, and the point at which savings would be gone at the shortfall shown in the first table. A deferred period at the earliest of the three leaves no month without income; one at the latest is the cheapest that still avoids running out of money, if the savings would really be kept for this purpose. Where the savings are also the emergency fund for a boiler or a car, many people count only part of them.</p>
 
-<h2>What the state rates mean for the choice</h2>
-<p>The state pays most in the first months and least afterwards. Statutory Sick Pay is ${h.m2(h.P.ssp.weekly)} a week at most; the ${h.src('gov_rates', 'DWP rates')} put the ESA assessment rate at ${h.m2(h.P.esa.assessment25)} and the work-related activity group at ${h.m2(h.P.esa.wrag)}, which stops after ${h.P.esa.wragDays} days. Because the state support thins out over time, the cost of a long deferred period is borne in the hardest months. The ${h.a('income-protection-insurance', 'full timeline')} lets you enter any benefit and period.</p>
-<h2>A worked choice for this employee</h2>
+<p>The state pays most in the first months and least afterwards. Statutory Sick Pay is ${h.m2(h.P.ssp.weekly)} a week at most; the ${h.src('gov_rates', 'government rates')} put the ESA assessment rate at ${h.m2(h.P.esa.assessment25)} and the work-related activity group at ${h.m2(h.P.esa.wrag)}, which stops after ${h.P.esa.wragDays} days. Because the state support thins out over time, the cost of a long deferred period is borne in the hardest months. The ${h.a('income-protection-insurance', 'full timeline')} lets you enter any benefit and period.</p>
+
 <p>On these figures, a policy starting at week ${CASE.fullWeeks} would overlap the half-pay months and cost more than needed for the first part of an absence. A policy starting at week ${CASE.fullWeeks + CASE.halfWeeks} begins as company pay ends, so the savings only have to cover the half-pay shortfall, which they do. A policy starting at week 52 leaves half a year of state benefits alone, which the savings would not cover. So the choice here is between the second and the third, and the second is the one that leaves no month in which the household runs out of money. Changing a single figure, such as the savings or the weeks of half pay, can move the answer, which is why the calculator is set to your own scheme.</p>
 `;
   },

@@ -19,9 +19,9 @@ export default definePage({
   h1: 'Mortgage life insurance: matching the cover to the balance',
   intro: 'Mortgage life insurance has to clear what would still be owed. Enter the loan, the rate and the years left to see that balance at any point.',
   resume: (h) => {
-    const b10 = h.E.mortgageBalance(LOAN, RATE, YEARS, 10), b20 = h.E.mortgageBalance(LOAN, RATE, YEARS, 20);
-    const p = h.odds(AGE, YEARS, 'm');
-    return `Mortgage life insurance is term cover set up to repay a home loan if a borrower dies before it is paid off. Most is sold as decreasing term cover, whose sum assured falls each year roughly in line with a capital repayment mortgage. On a ${h.m(LOAN)} loan at ${h.pc(RATE)} over ${YEARS} years, the balance is still ${h.m(b10)} after ten years and ${h.m(b20)} after twenty, because early payments go mostly on interest. A decreasing policy follows that curve, so the insurer’s exposure shrinks and the premium is lower than for level cover of the full loan. For a man of ${AGE}, the ONS life tables put the chance of a claim within those ${YEARS} years at ${h.pc(p)}. Lenders often ask for cover but cannot insist that you buy theirs: any insurer’s policy that clears the balance does the job.`;
+    const b10 = h.E.mortgageBalance(LOAN, RATE, YEARS, 10);
+    // Brief of 2026-11-10 (rule 3): one sentence, one figure; the calculator's own case.
+    return `Mortgage life insurance is term cover set up to repay a home loan if a borrower dies before it is paid off. Most is sold as decreasing term cover: the sum it would pay falls each year, roughly in line with a capital repayment mortgage. The loan falls slowly at first, because early payments go mostly on interest. Take the example in the calculator, a ${h.m(LOAN)} repayment mortgage over ${YEARS} years. After ten years, ${h.m(b10)} is still owed. A decreasing policy follows that curve, so the insurer’s risk shrinks and the monthly price is lower than for level cover, which pays the full loan all along. Lenders often ask whether you have cover but cannot insist that you buy theirs: any insurer’s policy that clears the balance does the job. The table below shows what is still owed in each year of the loan, and what level cover would leave the family on top.`;
   },
   faqs: (h) => [
     { q: 'Do I legally need life insurance to get a mortgage?', a: 'No. It is not a legal requirement in the UK, and lenders usually do not make it a condition of a residential loan, though some ask about it. It matters most when someone else depends on the home: a partner who could not keep up the payments alone, or children. A single borrower with no dependants may decide that the house sale would clear the debt.' },
@@ -31,26 +31,24 @@ export default definePage({
   body: (h) => {
     const ys = [0, 5, 10, 15, 20, 25];
     // Year 25 is the last payment: the policy ends with the loan, so it pays nothing above the debt then.
-    const rows = ys.map((t) => { const b = h.E.mortgageBalance(LOAN, RATE, YEARS, t); const fin = t >= YEARS; return [fin ? `Year ${t}, last payment` : `Year ${t}`, h.m(b), fin ? 'nothing' : h.pc(b / LOAN), fin ? 'cover ends' : h.m(LOAN - b)]; });
+    const rows = ys.map((t) => { const b = h.E.mortgageBalance(LOAN, RATE, YEARS, t); const fin = t >= YEARS; return [fin ? `Year ${t}, last payment` : `Year ${t}`, h.m(b), fin ? 'nothing' : h.pc(b / LOAN), fin ? 'nothing: the policy ends with the loan' : h.m(LOAN - b)]; });
     const pay = h.E.mortgagePayment(LOAN, RATE, YEARS);
     const hi = h.E.mortgageBalance(LOAN, 0.06, YEARS, 12), lo = h.E.mortgageBalance(LOAN, RATE, YEARS, 12);
     return `
 <h2>How a repayment mortgage falls</h2>
-<p>The monthly payment on this loan is ${h.m(pay)}. At the start, most of it is interest; by the end, almost all of it is capital. So the balance falls slowly for the first decade and fast in the last one. A policy of the full loan bought as level cover pays far more than the debt in the later years, which is money for the family rather than the lender.</p>
-${h.table(['Point in the term', 'Still owed', 'Share of the loan', 'Level cover above the debt'], rows, `${h.m(LOAN)} capital repayment mortgage at ${h.pc(RATE)} over ${YEARS} years, monthly payments.`, ['l', 'r', 'r', 'r'])}
+<p>The monthly mortgage payment on this loan is ${h.m(pay)}. At the start, most of it is interest; by the end, almost all of it is capital. So the balance falls slowly for the first decade and fast in the last one. A policy of the full loan bought as level cover pays far more than the debt in the later years, which is money for the family rather than the lender.</p>
+${h.table(['Year of the loan', 'Still owed', 'Share of the loan', `Left for the family with level cover of ${h.m(LOAN)}`], rows, `${h.m(LOAN)} capital repayment mortgage at ${h.pc(RATE)} over ${YEARS} years, monthly payments.`, ['l', 'r', 'r', 'r'])}
 
 <h2>When the rate moves</h2>
 <p>A decreasing policy’s sum follows a schedule fixed when it starts. Mortgage rates do not stay fixed for 25 years. If the rate rises to ${h.pc(0.06)} for the whole term, the same loan still owes ${h.m(hi)} after twelve years instead of ${h.m(lo)}: the cover can fall faster than the debt. People who expect to remortgage several times sometimes choose a decreasing schedule built on a higher assumed rate, or level cover for part of the loan, so that the policy never falls below the balance.</p>
 
-<h2>Interest-only and part-and-part loans</h2>
+<h2>Mortgage life insurance: trust or estate</h2>
+<p>A policy that pays the lender directly clears the debt; one paid to the estate is part of it, as ${h.src('gov_valuing', 'GOV.UK’s guide to valuing an estate')} shows, and waits for probate (the legal process of settling the estate). Writing the policy in trust (on a form the insurer provides, naming who receives the money), under the rules GOV.UK sets out for ${h.src('gov_trusts', 'trusts')}, lets the trustees use the money at once. The ${h.a('life-insurance-in-trust', 'trust page')} shows the tax at stake.</p>
+<p>The odds that this cover is ever claimed are low, as the official UK death statistics, the ${h.src('ons_nlt', 'ONS life tables')}, show for every age. The cost of being without it, for a family that could not keep the home, is what makes it worth looking at.</p>
+
 <p>An interest-only loan owes the full amount until the last day, so decreasing cover does not fit it at all. A part-and-part mortgage needs level cover for the interest-only part and can use decreasing cover for the repayment part. The calculator above models the repayment part only.</p>
 
-<h2>Cover that already exists</h2>
 <p>Before buying a mortgage policy, add up what would already be paid on a death: death in service from an employer, an older policy, and savings. If those cover the balance, a new policy only adds a second payout. The ${h.a('home', 'life cover calculator')} counts them, together with the family’s income need, which a mortgage policy alone does not touch.</p>
-
-<h2>Mortgage life insurance: trust or estate</h2>
-<p>A policy that pays the lender directly clears the debt; one paid to the estate is part of it, as ${h.src('gov_valuing', 'GOV.UK’s guide to valuing an estate')} shows, and waits for probate. Writing the policy in trust, under the rules GOV.UK sets out for ${h.src('gov_trusts', 'trusts')}, lets the trustees use the money at once. The ${h.a('life-insurance-in-trust', 'trust page')} shows the tax at stake.</p>
-<p>The odds that this cover is ever claimed are low, as the ${h.src('ons_nlt', 'ONS life tables')} show for every age. The cost of being without it, for a family that could not keep the home, is what makes it worth looking at.</p>
 `;
   },
 });

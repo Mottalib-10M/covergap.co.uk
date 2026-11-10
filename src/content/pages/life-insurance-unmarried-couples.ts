@@ -33,19 +33,18 @@ export default definePage({
     const t = h.E.ihtOnPayout({ estate: 350000, payout: 200000, home: 250000, toDescendants: false, toSpouse: false });
     return `
 <h2>Married and unmarried, side by side</h2>
-<p>The table sets the three things that change between a married and an unmarried couple: the bereavement benefit, inheritance tax on what the survivor receives, and what happens without a will, as ${h.src('gov_intestacy', 'GOV.UK’s intestacy guide')} sets out. Benefit amounts are the ${h.src('gov_rates', 'DWP rates for')} ${h.P.taxYear}; the conditions are those of ${h.src('gov_bsp', 'GOV.UK’s Bereavement Support Payment guide')}.</p>
+<p>The table sets the three things that change between a married and an unmarried couple: the bereavement benefit, inheritance tax on what the survivor receives, and what happens without a will, as ${h.src('gov_intestacy', 'GOV.UK’s intestacy guide')} sets out. Benefit amounts are the ${h.src('gov_rates', 'government rates for')} ${h.P.taxYear}; the conditions are those of ${h.src('gov_bsp', 'GOV.UK’s Bereavement Support Payment guide')}.</p>
 ${h.table(['Couple', 'Bereavement Support Payment', 'Inheritance tax on what the partner inherits', 'Without a will'], rows, `Claim within ${h.P.bsp.fullClaimMonths} months; the person who died must have paid enough National Insurance.`, ['l', 'r', 'l', 'l'])}
-
-<h2>The inheritance tax gap in figures</h2>
-<p>Take an estate of ${h.m(350000)}, including a ${h.m(250000)} share of a home, left by will to an unmarried partner, and a ${h.m(200000)} life policy paid into the estate. The partner is not a child or grandchild, so no residence band applies, and there is no spouse exemption. The policy adds ${h.m(t.extra)} of inheritance tax, and the partner receives ${h.m(t.familyGetsInEstate)} of the ${h.m(200000)}. Written in trust for the partner, the same policy would have reached them in full. The rules are on ${h.src('gov_iht', 'GOV.UK’s inheritance tax page')}; the ${h.a('life-insurance-in-trust', 'trust calculator')} runs your own case.</p>
 
 <h2>What life insurance for unmarried couples usually has to do</h2>
 <p>For an unmarried couple without children, the need is often the home: a survivor who owns half the house and has a mortgage in both names may have to buy out the other half from the estate, or pay the whole mortgage alone. For a couple with children, the state does pay Bereavement Support Payment, but the long-term income need is the same as for married parents. The ${h.a('home', 'life cover calculator')} has a setting for living together, which counts the benefit only when it is due.</p>
 
-<h2>Death in service and pensions</h2>
-<p>Many employer schemes ask members to say on an expression of wishes form who should receive death in service and survivor benefits. A partner who is not named on it leaves the scheme to decide without that guidance. Filling the form in costs nothing and is worth doing at the same time as any new policy. The ${h.a('death-in-service', 'death in service page')} shows how far that benefit goes.</p>
 <h2>Three steps that close most of the gap</h2>
 <p>First, write a will, because without one an unmarried partner inherits nothing under the ${h.src('gov_intestacy', 'intestacy rules')}. Second, put any life policy in trust with the partner as a beneficiary, so the payout reaches them directly and outside the estate. Third, fill in the expression of wishes form for each pension and death in service scheme, naming the partner. None of the three costs much, and together they mean the money that exists reaches the person it was meant for. Only then is it worth working out how much extra cover is needed, using the ${h.a('home', 'calculator')} with the unmarried setting so that Bereavement Support Payment is counted only where children qualify.</p>
+
+<p>Take an estate of ${h.m(350000)}, including a ${h.m(250000)} share of a home, left by will to an unmarried partner, and a ${h.m(200000)} life policy paid into the estate. The partner is not a child or grandchild, so no residence band applies, and there is no spouse exemption. The policy adds ${h.m(t.extra)} of inheritance tax, and the partner receives ${h.m(t.familyGetsInEstate)} of the ${h.m(200000)}. Written in trust for the partner, the same policy would have reached them in full. The rules are on ${h.src('gov_iht', 'GOV.UK’s inheritance tax page')}; the ${h.a('life-insurance-in-trust', 'trust calculator')} runs your own case.</p>
+
+<p>Many employer schemes ask members to say on an expression of wishes form who should receive death in service and survivor benefits. A partner who is not named on it leaves the scheme to decide without that guidance. Filling the form in costs nothing and is worth doing at the same time as any new policy. The ${h.a('death-in-service', 'death in service page')} shows how far that benefit goes.</p>
 `;
   },
 });

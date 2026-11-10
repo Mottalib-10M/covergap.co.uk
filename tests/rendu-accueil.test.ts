@@ -15,7 +15,8 @@ const pages = (dir: string): string[] => readdirSync(dir).flatMap((f) => {
 const text = (html: string) => html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;| | /g, ' ');
 const money = (s: string) => Number(s.replace(/[£,\s]/g, ''));
 
-describe.skipIf(!existsSync(DIST))('built pages', () => {
+// Each built file is read only after existsSync (a deploy once failed on a dist/ without its pages).
+describe.skipIf(!existsSync(join(DIST, 'en/index.html')))('built pages', () => {
   it('no HTML tag is shown as text', () => {
     const bad = pages(DIST).filter((p) => /&lt;(a|p|strong|em|span|br)[\s>]/.test(readFileSync(p, 'utf8')));
     expect(bad).toEqual([]);

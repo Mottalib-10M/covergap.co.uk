@@ -13,7 +13,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 import Tool from './Tool.astro';
 import Sources from './Sources.astro';
 import Clamp from './Clamp.astro';
-import { COVER_DEFAULTS, article } from '../lib/cover-defaults';
+import { COVER_DEFAULTS, SICK_DEFAULTS, article } from '../lib/cover-defaults';
 import { route } from '../i18n/routes';
 import { PAGES } from '../lib/guides';
 import { groupLabel, GROUPS_ORDER } from '../i18n/nav';
@@ -30,15 +30,7 @@ const B = P.bsp;
 const C = COVER_DEFAULTS;
 const DEF = { mortgage: C.mortgage, debts: C.debts, funeral: C.funeral, income: C.income, years: C.years, extra: C.extra, savings: C.savings, deathInService: C.dis, existing: C.existing, partner: C.partner, children: C.kids, countBsp: true };
 const def = E.coverNeed(DEF);
-const defOdds = E.payoutChance(C.age, C.years, C.sex, C.area);
 const higher = E.bsp('married', true), standard = E.bsp('married', false);
-
-// Chance a term policy pays out, ONS 2022-2024, United Kingdom.
-const AGES = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
-const TERMS = [10, 20, 25];
-const oddsRows = AGES.map((a) => [`${a}`, ...TERMS.flatMap((t) => [pc(E.payoutChance(a, t, 'm')), pc(E.payoutChance(a, t, 'f'))])]);
-const nationRows = E.AREAS.map((ar) => [E.AREA_LABEL[ar], pc(E.payoutChance(40, 25, 'm', ar)), pc(E.payoutChance(40, 25, 'f', ar)), h.num1(E.lifeExpectancy(40, 'm', ar)), h.num1(E.lifeExpectancy(40, 'f', ar))]);
-const scotVsEng = E.payoutChance(40, 25, 'm', 'scotland') / E.payoutChance(40, 25, 'm', 'england');
 
 // Three households. The description is written from the same inputs the engine adds up, so every amount in
 // the total is named (audit of 2026-11-09: 425,000 computed by the reader against 428,000 shown).
@@ -56,45 +48,48 @@ const describe = (i: In, extraText: string) => [
 const F1: In = { mortgage: 0, debts: 3000, funeral: 5000, income: 30000, years: 14, extra: 0, savings: 6000, deathInService: 96000, existing: 0, partner: 'cohabiting', children: true, countBsp: true };
 const F2: In = { mortgage: 240000, debts: 12000, funeral: 6000, income: 18000, years: 8, extra: 30000, savings: 20000, deathInService: 0, existing: 0, partner: 'married', children: true, countBsp: true };
 const F3: In = { mortgage: 60000, debts: 0, funeral: 6000, income: 10000, years: 10, extra: 0, savings: 40000, deathInService: 0, existing: 100000, partner: 'married', children: false, countBsp: true };
+// Testers of 2026-11-10: the reader of 61 found her case third, mid-page; the oldest household now comes first.
 const fams = [
-  { who: 'Renting couple, not married, one child of 4 (earner aged 31)', what: describe(F1, ''), r: E.coverNeed(F1), age: 31, sex: 'm' as const, term: F1.years },
-  { who: 'Married homeowners, two teenagers (earner aged 47)', what: describe(F2, 'for university'), r: E.coverNeed(F2), age: 47, sex: 'f' as const, term: F2.years },
   { who: 'Married, children grown up (earner aged 58)', what: describe(F3, ''), r: E.coverNeed(F3), age: 58, sex: 'm' as const, term: F3.years },
+  { who: 'Married homeowners, two teenagers (earner aged 47)', what: describe(F2, 'for university'), r: E.coverNeed(F2), age: 47, sex: 'f' as const, term: F2.years },
+  { who: 'Renting couple, not married, one child of 4 (earner aged 31)', what: describe(F1, ''), r: E.coverNeed(F1), age: 31, sex: 'm' as const, term: F1.years },
 ];
 
-// Sick pay strip: a £2,800 a month employee with four weeks of company sick pay.
-const sick = E.sickGap({ monthlyPay: 2800, monthlyNeed: 2000, fullWeeks: 4, halfWeeks: 0, age: 40, employee: true });
-const sspLow = E.sspWeekly(120);
-// The shortfall adds up only the weeks below outgoings: weeks of full pay above them are not carried forward.
-const sickNeed = 2000 * 24;
-const sickSurplus = sick.shortfall - (sickNeed - sick.income);
+// Sick pay strip: the site's one sick pay example (brief of 2026-11-10, rule 1: one figure per case).
+const SDf = SICK_DEFAULTS;
+const sick = E.sickGap({ monthlyPay: SDf.pay, monthlyNeed: SDf.need, fullWeeks: SDf.full, halfWeeks: SDf.half, age: C.age, employee: true });
+const about = (x: number) => m(Math.round(x / 100) * 100);
 // Where to start: the cases the testers came with. Second round of 2026-11-09: a reader of 24 with no child
 // and no loan, and one of 61 close to retirement, had no door; each now loads its own example into the
 // calculator (`ex=1`: still marked as an example), and over 50s plans are named for what they are.
 const preset = (q: Record<string, string | number>) => `${route('home', lang)}?ex=1&${Object.entries(q).map(([k, v]) => `${k}=${v}`).join('&')}#calculator`;
-const starts = [
-  { href: '#calculator', label: 'Parent or couple with a mortgage', note: 'the calculator below' },
-  { href: preset({ a: 25, s: 'f', p: 'none', c: 0, mo: 0, de: 3000, fu: 5000, i: 0, y: 10, x: 0, sa: 2000 }), label: 'Under 30, renting, no children', note: 'do you need cover at all?' },
-  { href: route('life-insurance-unmarried-couples', lang), label: 'Living together, not married', note: 'what your partner would get' },
-  { href: preset({ a: 61, s: 'f', p: 'married', c: 0, mo: 40000, de: 0, fu: 5000, i: 12000, y: 6, x: 0, sa: 30000 }), label: 'Over 55, children grown up', note: 'cover until your State Pension' },
-  { href: route('over-50s-life-insurance', lang), label: 'A small policy for funeral costs', note: 'over 50s plans' },
-  { href: route('income-protection-insurance', lang), label: 'Worried about being off sick', note: 'income protection' },
+// Brief of 2026-11-10 (rule 2): doors by profile are buttons above the calculator. Those that load an example
+// say so; those that open another page are set apart and end with an arrow.
+const loads = [
+  { href: preset({ a: C.age, s: C.sex, p: C.partner, c: 1, mo: C.mortgage, de: C.debts, fu: C.funeral, i: C.income, y: C.years, x: C.extra, sa: C.savings }), label: 'Parent or couple with a mortgage' },
+  { href: preset({ a: 25, s: 'f', p: 'none', c: 0, mo: 0, de: 3000, fu: 5000, i: 0, y: 10, x: 0, sa: 2000 }), label: 'Under 30, renting, no children' },
+  { href: preset({ a: 61, s: 'f', p: 'married', c: 0, mo: 40000, de: 0, fu: 5000, i: 12000, y: 6, x: 0, sa: 30000 }), label: 'Over 55, children grown up' },
+];
+const opens = [
+  { href: route('life-insurance-unmarried-couples', lang), label: 'Living together, not married' },
+  { href: route('income-protection-insurance', lang), label: 'Worried about being off sick' },
+  { href: route('over-50s-life-insurance', lang), label: 'A small policy for funeral costs' },
 ];
 
 const nSrc = Object.keys(P.sources).length;
 const faqs = [
   { q: 'How much life insurance do I need in the UK?', a: `Add what your family would have to pay or replace: the mortgage, other debts, a funeral, the income they would lose for the years it matters, and any lump sums for the children. Take off savings they could use, death in service from work, policies you already hold and, for a married couple with children, ${m(higher.total)} of Bereavement Support Payment. The calculator above does the sum with your own figures.` },
   { q: 'Does the government pay anything if my husband or wife dies?', a: `Yes, if the person who died paid enough National Insurance and the survivor is under State Pension age. Bereavement Support Payment is ${m(B.higherLump)} plus ${B.months} monthly payments of ${m(B.higherMonthly)} for a parent getting Child Benefit, or ${m(B.standardLump)} plus ${B.months} payments of ${m(B.standardMonthly)} without children. It is not means-tested, and the claim must be made within ${B.fullClaimMonths} months for the full amount.` },
-  { q: 'What are the chances my term life insurance actually pays out?', a: `At today’s death rates, a man of 40 who takes a 25-year policy has a ${pc(E.payoutChance(40, 25, 'm'))} chance of dying within the term, and a woman of the same age ${pc(E.payoutChance(40, 25, 'f'))}, on the ONS national life tables for 2022 to 2024. Insured people tend to be healthier than the population as a whole, so the real figure for policyholders is likely lower.` },
+  { q: 'What are the chances my term life insurance actually pays out?', a: `At today’s death rates, a man of 40 who takes a 25-year policy has a ${pc(E.payoutChance(40, 25, 'm'))} chance of dying within the term, and a woman of the same age ${pc(E.payoutChance(40, 25, 'f'))}, on the official UK death statistics (the ONS, Office for National Statistics, life tables for 2022 to 2024). Insured people tend to be healthier than the population as a whole, so the real figure for policyholders is likely lower.` },
   { q: 'Why does this site not show life insurance prices?', a: 'Because no price source exists that a website may republish: insurer and broker quotes are their own data, the industry claims figures are not licensed for reuse here, and the averages some sites print come with no method. A price that cannot be traced is not shown. What can be shown without a form is the size of the gap and the odds of a claim, from public data.' },
   { q: 'Is life insurance worth it if my employer gives four times salary?', a: 'Death in service pays only while you work for that employer and stops the day you leave, retire or are made redundant. Enter it in the calculator as cover you already have: if it covers the gap, a personal policy adds nothing today, but it is worth checking again at each change of job.' },
-  { q: 'Should the cover last until my youngest child is 18 or until the mortgage ends?', a: 'The two dates often differ by ten years or more. One approach families use is two policies: decreasing cover that tracks a repayment mortgage to its last payment, and level or family income cover that ends when the youngest leaves education. The calculator lets you set the number of years of income separately from the mortgage balance.' },
   { q: 'Do I have to give my phone number to use the calculator?', a: 'No. There is no form, no account and no callback. Everything runs in your browser and nothing you type is sent anywhere: the address bar only changes if you copy a link to share your own figures. The site has nothing to sell you and passes no details to insurers or brokers.' },
 ];
 const jsonLd = [webApplicationSchema({ name: 'Life cover calculator', description: 'Life cover needed after Bereavement Support Payment, death in service and savings, with the chance a policy pays out.', path: route('home', lang), lang }), websiteSchema(lang), organizationSchema(lang), faqSchema(faqs, lang)];
 const groups = GROUPS_ORDER.map((g) => ({ g, pages: PAGES.filter((p) => p.group === g) })).filter((x) => x.pages.length);
-const oddsHead = ['Age', ...TERMS.flatMap((t) => [`${t} yrs, men`, `${t} yrs, women`])];
-const exampleText = `The case loaded above is a married parent of ${C.age} with a child at home, ${m(DEF.mortgage)} left on a repayment mortgage, ${m(DEF.debts)} of other debts and a family that would lose ${m(DEF.income)} a year of income for ${DEF.years} years. Add ${m(DEF.funeral)} for a funeral and ${m(DEF.extra)} for the children and the household would face ${m(def.gross)}. The surviving partner would receive ${m(higher.total)} of Bereavement Support Payment, the state bereavement payment (${m(B.higherLump)} at once and ${B.months} monthly payments of ${m(B.higherMonthly)}), and ${m(DEF.savings)} of savings is there already, which leaves ${m(def.need)} of life cover to find. A level term policy of ${DEF.years} years on a man of that age pays out in about ${pc(defOdds)} of cases at current death rates, which is why such policies are cheap at that age and why the cover only has to exist for the years the family depends on one income. Change any field and every line moves.`;
+// Citable block (§21), rewritten for the brief of 2026-11-10 (rule 3): the method in words, one figure, no
+// chain of amounts the reader has just seen in the calculator.
+const exampleText = `A life insurance calculator should start from what your family would actually have to pay, not from a multiple of your salary. This one adds the mortgage still owed, other debts, a funeral, the income the family would lose for the years it matters, and any lump sums for the children. It then takes off what would already arrive: Bereavement Support Payment, the state payment to a husband, wife or civil partner (up to ${m(higher.total)} for a parent), life cover from your job, policies you already hold and savings the family could use. What is left is the cover to buy, and its length is the number of years someone depends on your income. Each line of the result shows one of these amounts, so the sum can be checked by hand. Nothing you type leaves your browser, and no insurer or broker sees it.`;
 ---
 <PageLayout title="Life Insurance Calculator UK 2026/27: Cover After State Help" description="Life insurance calculator for 2026/27: the cover your family needs after Bereavement Support Payment and death in service, and the chance a policy pays out." lang={lang} jsonLd={jsonLd} faqs={faqs} faqOuverte={0}>
   <header class="mb-3">
@@ -102,14 +97,20 @@ const exampleText = `The case loaded above is a married parent of ${C.age} with 
     <p class="mt-2 text-base text-navy-700 sm:text-lg">This life insurance calculator adds up what your family would need, then takes off what the state, your job and your savings would already pay: what is left is the cover to buy. No quote form, no prices, no phone call.</p>
     <p class="mt-1 text-xs text-navy-600">Independent site, not an insurer, broker or government service: benefit claims are made only on GOV.UK.</p>
   </header>
-  <nav data-chrome data-depart aria-label="Not sure where to start?" class="mb-3 text-sm">
-    <p class="font-semibold text-navy-900">Not sure where to start? Pick the line closest to you:</p>
-    <ul class="mt-1 grid gap-x-4 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
-      {starts.map((s) => <li><a href={s.href} class="font-medium text-accent-700 underline underline-offset-2">{s.label}</a> <span class="text-navy-600 max-sm:hidden lg:hidden">· {s.note}</span></li>)}
+  <nav data-chrome data-depart aria-label="Closest to you?" class="mb-3 text-sm">
+    <p class="font-semibold text-navy-900">Closest to you? Tap to load that example into the calculator below:</p>
+    <ul class="mt-1 flex flex-wrap gap-1.5">
+      {loads.map((s) => <li><a href={s.href} class="inline-flex min-h-11 items-center rounded-full border border-accent-600 bg-white px-3 py-1 font-medium text-accent-800 no-underline hover:bg-accent-50">{s.label}</a></li>)}
     </ul>
   </nav>
   <div id="calculator" data-outil class="mb-4 scroll-mt-20"><Tool tool={{ kind: 'need' }} primary={true} /></div>
-  <p class="mb-6 text-sm text-navy-600">State rates read on GOV.UK and ONS life tables, updated <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time> · {AUTHOR_NAME} · <a href={route('method', lang)} class="underline hover:text-navy-900">How the figures are worked out</a> · <a href={route('about', lang)} class="underline hover:text-navy-900">Who publishes this site</a></p>
+  <nav data-chrome aria-label="Other cases" class="mb-4 text-sm">
+    <p class="font-semibold text-navy-900">Not your case? Go straight to:</p>
+    <ul class="mt-1 flex flex-wrap gap-1.5">
+      {opens.map((s) => <li><a href={s.href} class="inline-flex min-h-11 items-center rounded-full border border-navy-300 bg-navy-50 px-3 py-1 font-medium text-navy-900 no-underline hover:bg-white">{s.label} →</a></li>)}
+    </ul>
+  </nav>
+ <p class="mb-6 text-sm text-navy-600">Worked out by {AUTHOR_NAME} · <a href={route('method', lang)} class="underline hover:text-navy-900">How the figures are worked out</a> · <a href={route('about', lang)} class="underline hover:text-navy-900">Who publishes this site</a></p>
 
   <Clamp text={exampleText} id="clamp-home" class="mb-8" />
 
@@ -120,38 +121,28 @@ const exampleText = `The case loaded above is a married parent of ${C.age} with 
       <div class="border-t-4 border-navy-400 bg-navy-50 p-4"><p class="text-sm font-semibold text-navy-700">Married or civil partners, no child</p><p class="tabular-nums mt-1 text-3xl font-bold text-navy-900">{m(standard.total)}</p><p class="mt-2 text-sm text-navy-800">{m(B.standardLump)} at once, then {B.months} × {m(B.standardMonthly)}. Standard rate.</p></div>
       <div class="border-t-4 border-navy-400 bg-navy-50 p-4"><p class="text-sm font-semibold text-navy-700">Living together, not married</p><p class="tabular-nums mt-1 text-3xl font-bold text-navy-900">{m(higher.total)} or nothing</p><p class="mt-2 text-sm text-navy-800">Higher rate if the survivor gets Child Benefit for a child living with them or is pregnant; otherwise nothing.</p></div>
     </div>
-    <p class="mt-4 text-sm text-navy-700">Bereavement Support Payment, rates set by the DWP (Department for Work and Pensions) for {P.taxYear}. Claim within {B.fullClaimMonths} months of the death to get it all.</p>
-    <details class="mt-2 text-sm text-navy-700">
-      <summary class="cursor-pointer font-semibold text-navy-800">Who qualifies, and what a late claim loses</summary>
-      <p class="mt-2">The person who died must have paid enough National Insurance in any one tax year (as an employee or self-employed), or died from an accident at work; the survivor must be under State Pension age. A claim made after {B.fullClaimMonths} months loses monthly payments, after {B.lumpClaimMonths} months the one-off payment, after {B.lastClaimMonths} months everything.</p>
-    </details>
+    <div class="mt-4 space-y-2 text-navy-800">
+      <p>This is Bereavement Support Payment, at the rates set by the DWP (Department for Work and Pensions) for {P.taxYear}. It is a short bridge, not an income: spread over {B.months} months, the higher rate comes to about {m(higher.total / B.months)} a month.</p>
+      <p>No state benefit clears a mortgage, and since April 2017 none pays a widowed parent until the children grow up: that is the gap life cover exists to fill.</p>
+      <p>Who qualifies: the person who died paid enough National Insurance in any one tax year, and the survivor is under State Pension age. Claim within {B.fullClaimMonths} months of the death to get it all; after {B.lastClaimMonths} months nothing is paid.</p>
+    </div>
   </section>
 
-  <div class="prose prose-slate max-w-none">
-    <h2>What the benefit does and does not replace</h2>
-    <p>Bereavement Support Payment is a short bridge, not an income. Spread over its {B.months} months, the higher rate comes to about {m(higher.total / B.months)} a month, which is less than many families spend on a mortgage alone. There is no state benefit that clears a mortgage, and since April 2017 none that pays a widowed parent until the children grow up: that is the gap life cover exists to fill.</p>
-    <details class="repli-section">
-      <summary>How it sits with other benefits, and the funeral payment</summary>
-      <p>It ignores earnings and savings, and for a year after the first payment it is not counted against other benefits, so a survivor on Universal Credit keeps both. After that year, what is left of the one-off payment can count as capital.</p>
-      <p>Two other payments can matter in the first weeks. The <Fragment set:html={h.a('funeral-expenses-payment', 'Funeral Expenses Payment')} /> helps someone on a qualifying benefit with burial or cremation fees and up to {m(P.funeral.otherExpenses)} of other costs. An employee whose child dies may get Statutory Parental Bereavement Pay. Neither touches the long-term gap, so the calculator counts neither.</p>
-    </details>
-    <!-- Testers of 2026-11-09 (second round): the section most readers of working age need was folded. -->
-    <h2>Death is the smaller risk: the sick pay gap</h2>
-      <p>For people of working age, a long spell off work is more likely than death, and the state’s answer is thinner. Since {h.D.ssp}, Statutory Sick Pay (SSP), the legal minimum an employer must pay, is paid from the first day of absence at {m2(P.ssp.weekly)} a week or {pc(P.ssp.earningsShare)} of average weekly earnings, whichever is lower, for up to {P.ssp.maxWeeks} weeks. Someone earning {m(120)} a week gets {m2(sspLow)} a week. After {P.ssp.maxWeeks} weeks comes a state benefit for people too ill to work, New Style ESA (Employment and Support Allowance), at {m2(P.esa.assessment25)} a week for those aged 25 or over during the assessment, if the National Insurance record allows it.</p>
-      <p>For an employee on {m(2800)} a month with four weeks of company sick pay and {m(2000)} a month of outgoings, the two years after falling ill bring {m(sick.income)} against outgoings of about {m(sickNeed)}. The weeks below outgoings add up to a shortfall of {m(sick.shortfall)}: the {m(sickSurplus)} by which full pay exceeds outgoings in the first weeks is not counted against later months. The <Fragment set:html={h.a('income-protection-insurance', 'income protection timeline')} /> works this out week by week, with your employer’s scheme.</p>
-  </div>
-
-  <section class="not-prose my-10" aria-labelledby="odds-title">
-    <h2 id="odds-title" class="text-2xl font-bold text-navy-900">The chance a term policy pays out, by age and length</h2>
-    <p class="mt-2 text-navy-800">A man of 40 who takes a 20-year policy has a {pc(E.payoutChance(40, 20, 'm'))} chance that it pays out, a woman of 40 {pc(E.payoutChance(40, 20, 'f'))}. At 60, over 10 years: {pc(E.payoutChance(60, 10, 'm'))} for a man, {pc(E.payoutChance(60, 10, 'f'))} for a woman. Probability of dying within the term, United Kingdom, from official UK death statistics (ONS national life tables for 2022 to 2024).</p>
-    <details class="mt-3">
-      <summary class="cursor-pointer text-sm font-semibold text-accent-700 underline underline-offset-2">Show every age from 25 to 70</summary>
-      <Fragment set:html={h.table(oddsHead, oddsRows, 'Find your age, then the line for the length of your policy: a man of 40 taking 20 years reads “20 yrs, men”. Computed from each single year of age, period rates for the whole population.', ['l', 'r', 'r', 'r', 'r', 'r', 'r'])} />
-    </details>
+  <section class="not-prose my-10" aria-labelledby="sick-title">
+    <!-- Testers of 2026-11-10: “Death is the smaller risk” shocked the reader of 61, and one paragraph chained five amounts. One sentence, one figure. -->
+    <h2 id="sick-title" class="text-2xl font-bold text-navy-900">Being off sick is the likelier risk: the sick pay gap</h2>
+    <div class="mt-3 space-y-2 text-navy-800">
+      <p>At working age, a long spell off work is more likely than death, and the state pays less for it.</p>
+      <p>Statutory Sick Pay (SSP), the legal minimum an employer must pay, is at most {m2(P.ssp.weekly)} a week, for up to {P.ssp.maxWeeks} weeks.</p>
+      <p>After that, New Style ESA (Employment and Support Allowance), the state benefit for people too ill to work, pays {m2(P.esa.assessment25)} a week from age 25, if your National Insurance record qualifies.</p>
+      <p>Take an employee on {m(SDf.pay)} a month who spends {m(SDf.need)} a month. Over two years off sick, about <strong>{about(sick.income)}</strong> comes in.</p>
+      <p>Counting only the weeks when that falls below {m(SDf.need)} a month, the household ends up about <strong>{about(sick.shortfall)}</strong> short.</p>
+      <p><Fragment set:html={h.a('income-protection-insurance', 'Income protection: how much')} /> works this out week by week, with your own pay and your employer’s scheme.</p>
+    </div>
   </section>
 
   <section class="not-prose my-10" aria-labelledby="fams-title">
-    <h2 id="fams-title" class="text-2xl font-bold text-navy-900">Three households, worked through</h2>
+    <h2 id="fams-title" class="text-2xl font-bold text-navy-900">Three households, worked through with the life insurance calculator</h2>
     <div class="mt-5 grid gap-5 lg:grid-cols-3">
       {fams.map((f) => (
         <div class="border border-navy-200 p-4">
@@ -167,31 +158,14 @@ const exampleText = `The case loaded above is a married parent of ${C.age} with 
         </div>
       ))}
     </div>
-    <p class="mt-4 text-sm text-navy-700">The first household shows the two traps of an unmarried couple. Because Child Benefit is paid for their child, the survivor does qualify for the higher rate; without a child they would get nothing. And the life cover from work carries most of the need, but only while the earner stays in that job. The second household needs a large sum for a short time, which is where a short term is cheap. The third barely needs new cover once the old policy and the savings are counted.</p>
+    <ul class="mt-4 list-disc space-y-1 pl-5 text-navy-800">
+      <li>Children grown up: the old policy and the savings cover almost everything, so little new cover is needed.</li>
+      <li>Teenagers at home: a large sum for a short time, which is where a short term is cheap.</li>
+      <li>Not married, one child: the child makes the survivor eligible for the higher rate (without a child, nothing), and the cover from work counts only while the earner stays in that job.</li>
+    </ul>
   </section>
 
   <div class="prose prose-slate max-w-none">
-    <p class="text-sm text-navy-600">The sections below go into the detail. Tap a title to open it.</p>
-    <details class="repli-section">
-      <summary><h2>Level, decreasing or monthly: the shape of the cover</h2></summary>
-      <p>Once the amount is known, the shape follows the debt. A repayment mortgage falls every month, so <Fragment set:html={h.a('mortgage-life-insurance', 'decreasing term cover')} /> that shrinks with it costs less than level cover of the full loan; an interest-only loan does not fall, so it needs level cover. The income part of the need is a stream, not a lump: <Fragment set:html={h.a('family-income-benefit', 'family income benefit')} /> pays a monthly sum from the claim to the end of the term, which matches it more closely and usually costs less than a lump sum of the same total. A couple can share one <Fragment set:html={h.a('joint-life-insurance', 'joint policy')} /> that pays once, at the first death, or hold two single ones that can both pay. And a payout that goes into the estate, rather than to trustees, can be cut by inheritance tax: the <Fragment set:html={h.a('life-insurance-in-trust', 'trust calculator')} /> shows by how much.</p>
-    </details>
-    <details class="repli-section">
-      <summary><h2>Why we show odds and not prices</h2></summary>
-      <p>The price of a policy is the insurer’s view of exactly this probability, adjusted for its own claims experience, its expenses, its profit and what you tell it about your health, job and habits. Those adjustments are private and change week to week. We looked for a price source a website is allowed to republish and found none. Quotes belong to the insurer that gives them and to the broker that collects them. The industry publishes yearly claims statistics, but not under a licence that allows them to be reused here. Pages that print “average monthly cost by age” either credit a comparison site’s own survey or describe their figures as illustrative, with no method. A figure we cannot trace to its owner is not one we print.</p>
-      <p>The life tables, on the other hand, are public, official and free to reuse under the Open Government Licence. They give, for every age from 0 to 100 and for men and women separately, the probability of dying within the next year, in each of the four nations. Chained year by year over a policy term, they answer the question a buyer can actually use: if I pay for this cover for 25 years, how likely is it that my family ever claims? For most people in their thirties the honest answer is a few percent, which is the whole case for term insurance: a small, known cost against an unlikely event that would be ruinous.</p>
-      <p>One caution cuts the other way. The tables describe everyone, including people who could not get cover at standard rates. People who buy insurance and pass the insurer’s health questions tend to die later than the population average, so the odds in these tables are, if anything, higher than the ones an insurer is pricing for a healthy applicant.</p>
-      <p>That is also how this calculator differs from most pages on the subject: it takes off what the state already pays and what an employer already provides before suggesting a cover amount, and gives the odds of a claim from the official life tables, with no form to fill in. Comparison sites lead to a quote form that asks for a name, an address, a date of birth and health details before any real price; broker pages that print a table of “average premiums by age” give no source and no method for it.</p>
-    </details>
-    <details class="repli-section">
-      <summary><h2>Same age, the four UK nations</h2></summary>
-      <Fragment set:html={h.table(['Nation', 'Payout chance, man of 40, 25 years', 'Woman of 40, 25 years', 'Years left at 40, men', 'Years left at 40, women'], nationRows, 'ONS national life tables 2022-2024 for each nation. Insurers price the whole United Kingdom alike; the differences show the underlying risk, not a price.', ['l', 'r', 'r', 'r', 'r'])} />
-      <p>A man of 40 in Scotland is {h.num1(scotVsEng)} times as likely as one in England to die within 25 years. Where you live shapes the risk, even though policies are priced the same everywhere.</p>
-    </details>
-    <details class="repli-section">
-      <summary><h2>What this life insurance calculator leaves out</h2></summary>
-      <p>It assumes no interest on the money paid out: a lump sum invested while it is spent would stretch further, and inflation would shrink it, and the two are left to cancel. It does not model Universal Credit, which a survivor on a low income may claim, nor the State Pension the survivor might inherit through a late spouse’s record. It does not price anything, and it cannot tell you whether an insurer will accept you. The tax treatment of a payout depends on whether the policy is written in trust. These limits are set out on the <a href={route('method', lang)}>method page</a>.</p>
-    </details>
     <details class="repli-section">
       <summary class="cursor-pointer py-3 font-semibold text-accent-700 underline underline-offset-2">Show the {nSrc} official sources behind every figure</summary>
       <Sources lang={lang} intro="Every State benefit rate, tax rule and ONS life table figure behind this calculator and its guides was taken from these GOV.UK, HMRC, FCA and ONS pages, read on" />
